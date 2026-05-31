@@ -223,6 +223,7 @@
       </div>
     </div>
     <div class="top-right">
+      <button class="icon-top" id="btn-share" title="Share this archive (link)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
       <button class="icon-top" id="btn-theme" title="Light / dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
       <button class="icon-top" id="btn-help" title="How it works"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
       <button class="btn btn-primary" id="btn-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> New entry</button>
@@ -344,6 +345,16 @@
       <h4>Shortcuts</h4><p><span class="k">/</span> search · <span class="k">N</span> new entry · <span class="k">Esc</span> close</p>
     </div>
     <div class="modal-actions"><div class="grow"></div><button class="btn btn-primary" id="help-close">Got it</button></div>
+  </div>
+
+  <div class="modal" id="modal-share" style="display:none">
+    <h3>🔗 Share this archive</h3>
+    <div class="help-body" style="max-height:none">
+      <p>This link contains a <b>copy</b> of your whole archive (all drives &amp; shoots). Anyone who opens it gets your data and can keep editing their own copy — perfect for handing your list to a colleague.</p>
+      <div class="field" style="margin-top:4px"><label>Share link <span id="share-size" style="color:var(--text-3);font-weight:400"></span></label><input type="text" id="share-link" readonly></div>
+      <p style="font-size:12px;color:var(--text-3)">It's a snapshot — their edits stay on their device and yours on yours. To send an update, share a new link. (For live editing by several people at once, see “Cloud mode” in the README.)</p>
+    </div>
+    <div class="modal-actions"><div class="grow"></div><button class="btn btn-ghost" id="share-close">Close</button><button class="btn btn-primary" id="share-copy">Copy link</button></div>
   </div>
 </div>
 
@@ -508,7 +519,7 @@ function renderPick(){
     '<button type="button" class="pchip add" id="pick-add">'+I.plus+'New drive</button>';
 }
 function openEvent(id,presetDrive){
-  ui.editEv=id||null;modalEvent.style.display='block';modalDrive.style.display='none';document.getElementById('modal-help').style.display='none';
+  ui.editEv=id||null;modalEvent.style.display='block';modalDrive.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-share').style.display='none';
   document.getElementById('clients').innerHTML=allClients().map(c=>'<option value="'+esc(c)+'">').join('');
   const del=document.getElementById('f-delete'),approx=document.getElementById('f-approx'),dI=document.getElementById('f-date'),dT=document.getElementById('f-datetext');
   if(id){const e=state.events.find(x=>x.id===id);document.getElementById('modal-tag').textContent='EDIT';document.getElementById('modal-title-text').textContent='Edit footage';del.style.display='inline-flex';
@@ -546,7 +557,7 @@ document.getElementById('f-delete').addEventListener('click',()=>delEvent(ui.edi
 /* ===== drive modal ===== */
 function nextLabel(){const ns=state.drives.map(d=>parseInt(d.label,10)).filter(n=>!isNaN(n));return String(ns.length?Math.max(...ns)+1:1)}
 function openDrive(id){
-  ui.editDrv=id||null;modalDrive.style.display='block';modalEvent.style.display='none';document.getElementById('modal-help').style.display='none';
+  ui.editDrv=id||null;modalDrive.style.display='block';modalEvent.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-share').style.display='none';
   const del=document.getElementById('d-delete');
   if(id){const d=driveById(id);document.getElementById('dmodal-tag').textContent='EDIT';document.getElementById('dmodal-title').textContent='Edit drive';del.style.display='inline-flex';
     document.getElementById('d-kind').value=d.kind||'hdd';document.getElementById('d-label').value=d.label||'';document.getElementById('d-name').value=d.name||'';document.getElementById('d-status').value=d.status||'active';document.getElementById('d-note').value=d.note||'';
@@ -643,7 +654,7 @@ function printDrive(d){
 }
 function clearAll(){if(!state.drives.length&&!state.events.length){toast('Already empty');return}if(!confirm('Delete ALL drives and shoots from this browser? This cannot be undone — export a backup first if unsure.'))return;state={drives:[],events:[]};save();ui.sel=null;render();toast('Everything cleared')}
 document.getElementById('btn-clear').addEventListener('click',clearAll);
-function openHelp(){modalEvent.style.display='none';modalDrive.style.display='none';document.getElementById('modal-help').style.display='block';overlay.classList.add('open')}
+function openHelp(){modalEvent.style.display='none';modalDrive.style.display='none';document.getElementById('modal-share').style.display='none';document.getElementById('modal-help').style.display='block';overlay.classList.add('open')}
 document.getElementById('btn-help').addEventListener('click',openHelp);
 document.getElementById('help-close').addEventListener('click',closeModal);
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t)}
@@ -657,9 +668,36 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='n'||e.key==='N'){e.preventDefault();openEvent(null,ui.sel)}
 });
 
+/* ===== share via link (local snapshot in the URL) ===== */
+const modalShare=document.getElementById('modal-share');
+function b64e(s){return btoa(unescape(encodeURIComponent(s)))}
+function b64d(b){return decodeURIComponent(escape(atob(b)))}
+function shareLink(){return location.origin+location.pathname+'#a='+encodeURIComponent(b64e(JSON.stringify({drives:state.drives,events:state.events})))}
+function openShare(){
+  modalEvent.style.display='none';modalDrive.style.display='none';document.getElementById('modal-help').style.display='none';modalShare.style.display='block';
+  const link=shareLink(),inp=document.getElementById('share-link');inp.value=link;
+  document.getElementById('share-size').textContent='('+Math.max(1,Math.round(link.length/1024))+' KB'+(link.length>16000?' — large, the Export file may be easier to send':'')+')';
+  overlay.classList.add('open');
+  try{navigator.clipboard.writeText(link).then(()=>toast('Link copied'),()=>{})}catch(e){}
+  setTimeout(()=>{inp.focus();inp.select()},60);
+}
+function copyShare(){const i=document.getElementById('share-link');i.focus();i.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}try{navigator.clipboard.writeText(i.value).then(()=>toast('Link copied'),()=>{if(ok)toast('Link copied')})}catch(e){if(ok)toast('Link copied')}}
+function checkIncoming(){
+  const m=(location.hash||'').match(/[#&]a=([^&]+)/);if(!m)return;
+  let data;try{data=JSON.parse(b64d(decodeURIComponent(m[1])))}catch(e){return}
+  if(!data||!Array.isArray(data.drives)||!Array.isArray(data.events))return;
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  const hasLocal=(state.drives&&state.drives.length)||(state.events&&state.events.length);
+  const msg='Someone shared an archive with you ('+data.drives.length+' drives, '+data.events.length+' shoots).\n\nOpen it?'+(hasLocal?'\n\nThis REPLACES what you have now — export a backup first if you want to keep it.':'');
+  if(confirm(msg)){state={drives:data.drives,events:data.events};migrate();save()}
+}
+document.getElementById('btn-share').addEventListener('click',openShare);
+document.getElementById('share-copy').addEventListener('click',copyShare);
+document.getElementById('share-close').addEventListener('click',closeModal);
+
 /* ===== toast + init ===== */
 let tT;function toast(m){const t=document.getElementById('toast');document.getElementById('toast-text').textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2200)}
-load();render();try{history.replaceState({sel:null,view:ui.view},'')}catch(e){}
+load();checkIncoming();render();try{history.replaceState({sel:null,view:ui.view},'')}catch(e){}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>
 </body>
