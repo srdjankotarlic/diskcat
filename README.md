@@ -21,6 +21,7 @@ If you shoot video, you know the pain: footage spread across dozens of drives, S
 - **Capacity & free space** — set each drive's size; see fill bars and a total **free space** overview ("where do I have room?")
 - **Works offline (PWA)** — open it once, then add it to your home screen and use it without internet
 - **Export / Import** — one-click JSON backup you fully control
+- **Share via link** — hand your whole archive to a colleague with one link (they get an editable copy; no account needed)
 
 ## How to use it (3 ways)
 1. **Try it live** → https://srdjankotarlic.github.io/diskcat/ — works immediately, data saved in your browser. On a phone: browser menu → **Add to Home Screen** to use it like an app (even offline).
@@ -32,7 +33,11 @@ If you shoot video, you know the pain: footage spread across dozens of drives, S
 ## Data & privacy
 All data lives in your browser's `localStorage` — nothing is uploaded anywhere. Use **Export** now and then to keep a backup file. To move to another device, Export on one and Import on the other.
 
-> Want a **shared, live version** for a team (everyone with a link sees & edits the same data)? That's a small optional add-on with a free Supabase backend — open an issue and I'll add a guide.
+## Sharing
+Click **Share** (🔗 top right) → you get a link that contains a copy of your whole archive. Send it to a colleague; they open it, get all your drives & shoots, and keep editing **their own copy** — no account needed. It's a snapshot, so re-share to send updates (or use Export/Import for a file).
+
+## Cloud mode (optional — live team editing)
+By default DiskCat is **local + share-links**, which covers most needs with zero setup. If you want **several people editing the _same_ archive at once, live** (like a shared spreadsheet), that's an optional upgrade using a free [Supabase](https://supabase.com) backend (Auth + database). It's on the roadmap — open an issue if you'd like it.
 
 ## License
 MIT — free to use, modify and share.
