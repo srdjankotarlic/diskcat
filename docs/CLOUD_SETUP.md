@@ -10,6 +10,7 @@ Each team that wants sync creates its own Supabase project. That team owns the d
 - Owner/editor/viewer roles.
 - Public read-only link without an account.
 - Editor/viewer invite links for people who should sign in.
+- Project/root folder filters stay synced, so teams can see every drive and shoot related to the same job folder.
 - Local export/import still works as a backup.
 
 Cloud mode is designed for small production teams. It syncs the whole archive after edits, so the newest save wins if two editors change the same archive at the same time.

@@ -1,5 +1,5 @@
 /* DiskCat service worker — offline app shell */
-const CACHE = 'diskcat-v5';
+const CACHE = 'diskcat-v6';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg', './favicon.svg'];
 
 self.addEventListener('install', e => {

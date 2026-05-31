@@ -75,6 +75,14 @@
   .kpi.warn .v{color:var(--amber)}
   .kpi .mini-bar{height:5px;background:var(--surface-3);border-radius:99px;margin-top:9px;overflow:hidden}
   .kpi .mini-bar i{display:block;height:100%;background:linear-gradient(90deg,#54e0a0,#2fcf83);border-radius:99px}
+  .project-panel{display:flex;align-items:center;gap:18px;justify-content:space-between;background:linear-gradient(180deg,rgba(124,138,255,.1),rgba(124,138,255,.035)),var(--surface);border:1px solid rgba(124,138,255,.24);border-radius:16px;padding:16px 18px;margin:-4px 0 18px;box-shadow:0 16px 34px -28px rgba(0,0,0,.9)}
+  .project-panel h2{font-size:18px;font-weight:800;letter-spacing:-.01em}
+  .project-panel p{font-size:12.5px;color:var(--text-3);line-height:1.5;margin-top:4px}
+  .project-stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .project-stat,.project-drive{font-size:11.5px;font-weight:700;color:var(--text-2);background:var(--surface-3);border:1px solid var(--border);border-radius:8px;padding:6px 9px;white-space:nowrap}
+  .project-stat.warn{color:var(--amber);border-color:rgba(255,180,84,.28);background:rgba(255,180,84,.1)}
+  .project-drive{color:var(--accent);background:rgba(124,138,255,.1);border-color:rgba(124,138,255,.25)}
+  .project-drive:hover{background:rgba(124,138,255,.18)}
 
   .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px;min-height:38px}
   .seg{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:3px}
@@ -143,6 +151,8 @@
   .badge-bk{font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:4px 8px;border-radius:7px;background:rgba(61,220,151,.13);color:var(--ok);border:1px solid rgba(61,220,151,.3);white-space:nowrap}
   .badge-no{font-size:10.5px;font-weight:700;padding:4px 8px;border-radius:7px;background:rgba(255,180,84,.1);color:var(--amber);border:1px solid rgba(255,180,84,.25);white-space:nowrap}
   .meta-chip{font-size:11.5px;font-weight:600;color:var(--text-2);background:var(--surface-3);padding:3px 9px;border-radius:6px}
+  .project-chip{font-size:11.5px;font-weight:700;color:var(--accent);background:rgba(124,138,255,.1);border:1px solid rgba(124,138,255,.22);padding:3px 9px;border-radius:6px;cursor:pointer}
+  .project-chip:hover{background:rgba(124,138,255,.2)}
   .tag{font-size:11px;font-weight:600;color:var(--accent);background:rgba(124,138,255,.1);padding:3px 8px;border-radius:6px;cursor:pointer}
   .tag:hover{background:rgba(124,138,255,.2)}
   .meta-note{font-size:12.5px;color:var(--text-3);font-style:italic}
@@ -198,7 +208,7 @@
     #btn-new{display:none}.brand-name{font-size:16px}
     .row-date{width:auto;min-width:74px}.detail-head .btn{flex:1;justify-content:center}.detail-head .btn:nth-last-of-type(2){margin-left:0}
     .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.disk-num{font-size:40px}
-    .foot{padding-bottom:74px}.onboard{grid-template-columns:1fr}.cloud-meta{grid-template-columns:1fr}
+    .foot{padding-bottom:74px}.onboard{grid-template-columns:1fr}.cloud-meta{grid-template-columns:1fr}.project-panel{align-items:flex-start;flex-direction:column}.project-stats{justify-content:flex-start}
   }
   @media (hover:none),(pointer:coarse){.row-actions{opacity:1}}
   @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.05ms!important}}
@@ -262,7 +272,7 @@
     <div class="hero-eyebrow"><span class="live"></span> Which drive is that footage on?</div>
     <div class="search" id="search-box">
       <svg class="s-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="search" placeholder="Search shoots, clients, tags, year…" autocomplete="off">
+      <input type="text" id="search" placeholder="Search shoots, projects, tags…" autocomplete="off">
       <button class="search-clear" id="search-clear" title="Clear" aria-label="Clear search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
   </div></section>
@@ -277,6 +287,7 @@
     </div>
     <div class="spacer"></div>
     <div class="chips" id="year-chips"></div>
+    <select class="mini" id="project-filter"></select>
     <select class="mini" id="client-filter"></select>
     <button class="toggle-filter" id="bk-filter" title="Show only footage that is NOT backed up">⚠ Not backed up</button>
     <select class="mini" id="stage-filter"></select>
@@ -306,8 +317,9 @@
         <input type="text" id="f-datetext" placeholder="e.g. June 2025, ~05.2025" style="display:none">
         <label class="check"><input type="checkbox" id="f-approx"> Approximate / unknown date (type it)</label>
       </div>
-      <div class="field"><label>Client / project <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="text" id="f-client" list="clients" placeholder="e.g. Acme Corp" autocomplete="off"><datalist id="clients"></datalist></div>
+      <div class="field"><label>Client <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="text" id="f-client" list="clients" placeholder="e.g. Acme Corp" autocomplete="off"><datalist id="clients"></datalist></div>
     </div>
+    <div class="field"><label>Project / root folder <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="text" id="f-project" list="projects" placeholder="e.g. ACME_Launch_2026 or /Jobs/Acme Launch" autocomplete="off"><datalist id="projects"></datalist><div class="hint">Use the top-level folder/job name that repeats across drives. DiskCat can then show every related copy together.</div></div>
     <div class="field"><label>On which drive(s)? <span style="color:var(--text-3);font-weight:400">— tick all copies (2+ = backed up)</span></label><div class="pick" id="f-drives"></div></div>
     <div class="field-row">
       <div class="field"><label>Tags <span style="color:var(--text-3);font-weight:400">(comma separated)</span></label><input type="text" id="f-tags" placeholder="wedding, drone, 4k" autocomplete="off"></div>
@@ -363,8 +375,8 @@
     <h3 id="help-title">📀 About DiskCat</h3>
     <div class="help-body">
       <p><b>DiskCat</b> keeps track of which drive holds the footage from which shoot — so you find it in seconds instead of digging through drives.</p>
-      <h4>Find footage</h4><p>Type a shoot name, client, tag or year in the <b>search</b> — you'll see which drive(s) it's on. Or open <b>Drives</b> and click one.</p>
-      <h4>Add footage</h4><p>Click <b>＋ New entry</b>, name it, set the date, tick <b>which drive(s)</b> it's on (tick 2+ = backed up), add client / tags / stage. Save.</p>
+      <h4>Find footage</h4><p>Type a shoot name, project/root folder, client, tag or year in the <b>search</b> — you'll see which drive(s) it's on. Or open <b>Drives</b> and click one.</p>
+      <h4>Add footage</h4><p>Click <b>＋ New entry</b>, name it, set the date, add the project/root folder if one exists, tick <b>which drive(s)</b> it's on (tick 2+ = backed up), add client / tags / stage. Save.</p>
       <h4>Backups</h4><p>Footage on 2+ drives shows <b>✓ backed up</b>. The top counter shows how many shoots are <b>not</b> backed up yet.</p>
       <h4>Your data</h4><p>Local mode stores data <b>in this browser only</b>. Optional <b>Cloud sync</b> uses the Supabase project you enter; DiskCat does not host your cloud data.</p>
       <h4>Install (phone)</h4><p>Browser menu → <b>Add to Home Screen</b>. It then works like an app, even offline.</p>
@@ -488,7 +500,7 @@ const KEY='diskcat.v1';
 const CLOUD_KEY='diskcat.cloud.v1';
 const CLOUD_SQL_PATH='supabase/diskcat-self-owned-cloud.sql';
 let state={drives:[],events:[]};
-let ui={view:'drives',q:'',sort:'date_desc',year:'all',client:'all',onlyNoBackup:false,stage:'all',sel:null,editEv:null,editDrv:null,pick:[]};
+let ui={view:'drives',q:'',sort:'date_desc',year:'all',project:'all',client:'all',onlyNoBackup:false,stage:'all',sel:null,editEv:null,editDrv:null,pick:[]};
 let cloud={client:null,clientUrl:'',clientKey:'',url:'',key:'',user:null,archiveId:'',archiveName:'',role:'local',readOnly:false,publicToken:'',pendingInvite:null,syncTimer:null,reloadTimer:null,loading:false,syncing:false,lastSync:null,shareLink:'',authSub:null,channel:null};
 function uid(){return 'x'+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3)}
 function cloudCanWrite(){return !cloud.readOnly&&(!cloud.archiveId||cloud.role==='owner'||cloud.role==='editor')}
@@ -497,7 +509,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}cl
 function load(){try{const r=localStorage.getItem(KEY);if(r){state=JSON.parse(r);migrate();return}}catch(e){}}
 function migrate(){
   (state.drives||[]).forEach(d=>{if(!d.kind)d.kind='hdd';['label','name','note'].forEach(k=>{if(d[k]==null)d[k]=''});if(!d.status)d.status='active';if(d.capacity===undefined)d.capacity=null;if(d.used===undefined)d.used=null;if(!d.capUnit)d.capUnit='TB'});
-  (state.events||[]).forEach(e=>{if(!Array.isArray(e.driveIds))e.driveIds=e.driveId?[e.driveId]:[];if(!Array.isArray(e.tags))e.tags=[];['name','client','location','note'].forEach(k=>{if(e[k]==null)e[k]=''});if(e.stage==null)e.stage=''});
+  (state.events||[]).forEach(e=>{if(!Array.isArray(e.driveIds))e.driveIds=e.driveId?[e.driveId]:[];if(!Array.isArray(e.tags))e.tags=[];['name','client','projectRoot','location','note'].forEach(k=>{if(e[k]==null)e[k]=''});if(e.stage==null)e.stage=''});
 }
 
 /* ===== helpers ===== */
@@ -513,16 +525,27 @@ function getYear(e){if(e.date)return e.date.slice(0,4);if(e.dateDisplay){const m
 function fmtDate(e){if(e.dateDisplay)return e.dateDisplay;if(e.date){const[y,m,d]=e.date.split('-');return d+'.'+m+'.'+y+'.'}return null}
 function allYears(){const s=new Set();state.events.forEach(e=>{const y=getYear(e);if(y)s.add(y)});return[...s].sort((a,b)=>b.localeCompare(a))}
 function allClients(){const s=new Set();state.events.forEach(e=>{if(e.client)s.add(e.client)});return[...s].sort((a,b)=>a.localeCompare(b))}
+function allProjects(){const s=new Set();state.events.forEach(e=>{if(e.projectRoot)s.add(e.projectRoot)});return[...s].sort((a,b)=>a.localeCompare(b))}
 function cmp(a,b){if(ui.sort==='name')return a.name.localeCompare(b.name);const ad=a.date||'',bd=b.date||'';if(!ad&&!bd)return a.name.localeCompare(b.name);if(!ad)return 1;if(!bd)return -1;return ui.sort==='date_asc'?ad.localeCompare(bd):bd.localeCompare(ad)}
-function matchQ(e){const q=ui.q.trim().toLowerCase();if(!q)return true;const dn=e.driveIds.map(id=>{const d=driveById(id);return d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''}).join(' ');const hay=[e.name,e.client,e.tags.join(' '),e.location,e.note,e.stage||'',fmtDate(e)||'',getYear(e)||'',dn].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
-function passFilters(e){if(ui.year!=='all'&&getYear(e)!==ui.year)return false;if(ui.client!=='all'&&e.client!==ui.client)return false;if(ui.onlyNoBackup&&isBacked(e))return false;if(ui.stage!=='all'&&(e.stage||'')!==ui.stage)return false;return true}
+function matchQ(e){const q=ui.q.trim().toLowerCase();if(!q)return true;const dn=e.driveIds.map(id=>{const d=driveById(id);return d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''}).join(' ');const hay=[e.name,e.projectRoot,e.client,e.tags.join(' '),e.location,e.note,e.stage||'',fmtDate(e)||'',getYear(e)||'',dn].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
+function passFilters(e){if(ui.year!=='all'&&getYear(e)!==ui.year)return false;if(ui.project!=='all'&&e.projectRoot!==ui.project)return false;if(ui.client!=='all'&&e.client!==ui.client)return false;if(ui.onlyNoBackup&&isBacked(e))return false;if(ui.stage!=='all'&&(e.stage||'')!==ui.stage)return false;return true}
+function hasContentFilters(){return ui.year!=='all'||ui.project!=='all'||ui.client!=='all'||ui.onlyNoBackup||ui.stage!=='all'}
+function visibleEventsOnDrive(id){const evs=eventsOnDrive(id);return hasContentFilters()?evs.filter(passFilters):evs}
+function projectSummary(project){
+  const evs=state.events.filter(e=>e.projectRoot===project&&passFilters(e));
+  const driveIds=[...new Set(evs.flatMap(e=>e.driveIds))];
+  const noBk=evs.filter(e=>!isBacked(e)).length;
+  const drives=driveIds.map(id=>driveById(id)).filter(Boolean).sort(driveOrder);
+  const driveBtns=drives.map(d=>'<button class="project-drive" data-action="open-drive" data-id="'+d.id+'">'+(d.label?('#'+esc(d.label)):esc(kindLabel(d.kind)))+(d.name?' '+esc(d.name):'')+'</button>').join('');
+  return '<section class="project-panel"><div><h2>Project: '+esc(project)+'</h2><p>Everything logged under this project/root folder, across every drive and backup copy.</p></div><div class="project-stats"><span class="project-stat">'+evs.length+' '+(evs.length===1?'shoot':'shoots')+'</span><span class="project-stat">'+drives.length+' '+(drives.length===1?'drive':'drives')+'</span><span class="project-stat '+(noBk?'warn':'')+'">'+noBk+' not backed up</span>'+driveBtns+'</div></section>';
+}
 
 /* ===== render ===== */
 const content=document.getElementById('content');
 const searchInput=document.getElementById('search'),searchBox=document.getElementById('search-box');
 function render(){
   renderWriteState();
-  renderYearChips();renderClientFilter();renderStageFilter();renderOverview();
+  renderYearChips();renderProjectFilter();renderClientFilter();renderStageFilter();renderOverview();
   document.getElementById('bk-filter').classList.toggle('on',ui.onlyNoBackup);
   const searching=ui.q.trim().length>0;
   document.getElementById('view-seg').style.opacity=(searching||ui.sel)?'.4':'1';
@@ -535,6 +558,7 @@ function render(){
 function renderOverview(){
   const ov=document.getElementById('overview');
   if(ui.sel||ui.q.trim()){ov.innerHTML='';return}
+  if(ui.project!=='all'){ov.innerHTML=projectSummary(ui.project);return}
   const drives=state.drives.length, foot=state.events.length;
   const noBk=state.events.filter(e=>!isBacked(e)).length;
   let tot=0,used=0,has=false;
@@ -548,13 +572,14 @@ function renderOverview(){
   '</div>';
 }
 function renderYearChips(){const ys=allYears();document.getElementById('year-chips').innerHTML='<button class="chip '+(ui.year==='all'?'active':'')+'" data-year="all">ALL</button>'+ys.map(y=>'<button class="chip '+(ui.year===y?'active':'')+'" data-year="'+y+'">'+y+'</button>').join('')}
+function renderProjectFilter(){const ps=allProjects();const sel=document.getElementById('project-filter');if(ui.project!=='all'&&!ps.includes(ui.project))ui.project='all';sel.style.display=ps.length?'':'none';sel.innerHTML='<option value="all">All projects</option>'+ps.map(p=>'<option value="'+esc(p)+'"'+(ui.project===p?' selected':'')+'>'+esc(p)+'</option>').join('')}
 function renderClientFilter(){const cs=allClients();const sel=document.getElementById('client-filter');sel.style.display=cs.length?'':'none';sel.innerHTML='<option value="all">All clients</option>'+cs.map(c=>'<option value="'+esc(c)+'"'+(ui.client===c?' selected':'')+'>'+esc(c)+'</option>').join('')}
 function renderStageFilter(){const sel=document.getElementById('stage-filter');const o=[['all','All stages'],['raw','Raw'],['edited','Edited'],['delivered','Delivered'],['archived','Archived']];sel.innerHTML=o.map(p=>'<option value="'+p[0]+'"'+(ui.stage===p[0]?' selected':'')+'>'+p[1]+'</option>').join('')}
 const STAGEL={raw:'Raw',edited:'Edited',delivered:'Delivered',archived:'Archived'};
 function stageBadge(e){return e.stage?'<span class="stage '+e.stage+'">'+STAGEL[e.stage]+'</span>':''}
 
-function driveCard(d,i){
-  const evs=eventsOnDrive(d.id);
+function driveCard(d,i,evsOverride){
+  const evs=evsOverride||eventsOnDrive(d.id);
   const dated=evs.filter(e=>e.date).map(e=>e.date.slice(0,4));
   let range='';if(dated.length){const mn=Math.min(...dated.map(Number)),mx=Math.max(...dated.map(Number));range=mn===mx?''+mn:mn+'–'+mx}else if(evs.length)range='no dates';
   const ci=capInfo(d);
@@ -574,9 +599,11 @@ function driveCard(d,i){
     '<div class="disk-foot"><div class="disk-count">'+evs.length+' <span>'+(evs.length===1?'shoot':'shoots')+'</span></div><div class="disk-free" style="margin-top:3px">'+(range||'empty')+(d.note?' · '+esc(d.note):'')+'</div>'+cap+'</div></div>';
 }
 function renderDrives(){
-  const ds=[...state.drives].sort(driveOrder);
-  if(!ds.length)return content.innerHTML=emptyState('No drives yet','Add the drives you store footage on, then log which shoot is on which drive — and find it in seconds later.',cloudCanWrite());
-  content.innerHTML='<div class="grid">'+ds.map((d,i)=>driveCard(d,i)).join('')+(cloudCanWrite()?'<button class="disk add" data-action="add-drive"><span class="pl">'+I.plus+'Add drive</span></button>':'')+'</div>';
+  const filtered=hasContentFilters();
+  let ds=[...state.drives].sort(driveOrder);
+  if(filtered)ds=ds.filter(d=>visibleEventsOnDrive(d.id).length);
+  if(!ds.length)return content.innerHTML=filtered?emptyState('No drives match','Clear filters or choose another project to see drives.',false):emptyState('No drives yet','Add the drives you store footage on, then log which shoot is on which drive — and find it in seconds later.',cloudCanWrite());
+  content.innerHTML='<div class="grid">'+ds.map((d,i)=>driveCard(d,i,filtered?visibleEventsOnDrive(d.id):null)).join('')+(cloudCanWrite()&&!filtered?'<button class="disk add" data-action="add-drive"><span class="pl">'+I.plus+'Add drive</span></button>':'')+'</div>';
 }
 function renderList(){
   let items=state.events.filter(passFilters).sort(cmp);
@@ -609,7 +636,8 @@ function eventRow(e,showDrives){
   const badges=showDrives?drives.map(dr=>'<button class="drv-badge" data-action="open-drive" data-id="'+dr.id+'">'+(dr.label?('#'+esc(dr.label)):esc(kindLabel(dr.kind)))+(dr.name?' '+esc(dr.name):'')+'</button>').join(''):'';
   const bk=isBacked(e)?'<span class="badge-bk">✓ backed up ('+e.driveIds.length+')</span>':(e.driveIds.length===1?'':'<span class="badge-no">⚠ no drive</span>');
   const tags=e.tags.map(t=>'<span class="tag" data-action="tag" data-tag="'+esc(t)+'">#'+esc(t)+'</span>').join('');
-  const meta=(showDrives?badges:'')+(e.client?'<span class="meta-chip">'+esc(e.client)+'</span>':'')+(e.location?'<span class="meta-chip">'+esc(e.location)+'</span>':'')+tags+(e.note?'<span class="meta-note">'+esc(e.note)+'</span>':'');
+  const project=e.projectRoot?'<span class="project-chip" data-action="project" data-project="'+esc(e.projectRoot)+'">'+esc(e.projectRoot)+'</span>':'';
+  const meta=(showDrives?badges:'')+project+(e.client?'<span class="meta-chip">'+esc(e.client)+'</span>':'')+(e.location?'<span class="meta-chip">'+esc(e.location)+'</span>':'')+tags+(e.note?'<span class="meta-note">'+esc(e.note)+'</span>':'');
   const actions=cloudCanWrite()?'<div class="row-actions"><button class="icon-btn" data-action="edit-event" data-id="'+e.id+'" title="Edit" aria-label="Edit footage">'+I.edit+'</button><button class="icon-btn danger" data-action="del-event" data-id="'+e.id+'" title="Delete" aria-label="Delete footage">'+I.trash+'</button></div>':'';
   return '<div class="row"><div class="row-date '+(d?'':'no')+'">'+(d?esc(d):'—')+'</div>'+
     '<div class="row-main"><div class="row-name">'+esc(e.name)+(e.approx?'<span class="approx">~</span>':'')+' '+bk+' '+stageBadge(e)+'</div>'+(meta?'<div class="row-meta">'+meta+'</div>':'')+'</div>'+
@@ -630,13 +658,14 @@ function openEvent(id,presetDrive){
   if(!id&&!presetDrive&&!state.drives.length){openDrive(null);toast('Add a drive first');return}
   ui.editEv=id||null;modalEvent.style.display='block';modalDrive.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-cloud').style.display='none';document.getElementById('modal-share').style.display='none';
   document.getElementById('clients').innerHTML=allClients().map(c=>'<option value="'+esc(c)+'">').join('');
+  document.getElementById('projects').innerHTML=allProjects().map(p=>'<option value="'+esc(p)+'">').join('');
   const del=document.getElementById('f-delete'),approx=document.getElementById('f-approx'),dI=document.getElementById('f-date'),dT=document.getElementById('f-datetext');
   if(id){const e=state.events.find(x=>x.id===id);document.getElementById('modal-tag').textContent='EDIT';document.getElementById('modal-title-text').textContent='Edit footage';del.style.display='inline-flex';
-    document.getElementById('f-name').value=e.name||'';document.getElementById('f-client').value=e.client||'';document.getElementById('f-tags').value=(e.tags||[]).join(', ');document.getElementById('f-loc').value=e.location||'';document.getElementById('f-note').value=e.note||'';document.getElementById('f-stage').value=e.stage||'';
+    document.getElementById('f-name').value=e.name||'';document.getElementById('f-client').value=e.client||'';document.getElementById('f-project').value=e.projectRoot||'';document.getElementById('f-tags').value=(e.tags||[]).join(', ');document.getElementById('f-loc').value=e.location||'';document.getElementById('f-note').value=e.note||'';document.getElementById('f-stage').value=e.stage||'';
     ui.pick=[...e.driveIds];approx.checked=!!e.approx;
     if(e.approx){dI.style.display='none';dT.style.display='block';dT.value=e.dateDisplay||''}else{dI.style.display='block';dT.style.display='none';dI.value=e.date||'';dT.value=''}
   }else{document.getElementById('modal-tag').textContent='NEW';document.getElementById('modal-title-text').textContent='Add footage';del.style.display='none';
-    ['f-name','f-client','f-tags','f-loc','f-note','f-stage'].forEach(x=>document.getElementById(x).value='');
+    ['f-name','f-client','f-project','f-tags','f-loc','f-note','f-stage'].forEach(x=>document.getElementById(x).value='');
     approx.checked=false;dI.style.display='block';dT.style.display='none';dI.value='';dT.value='';
     ui.pick=presetDrive?[presetDrive]:[];
   }
@@ -654,6 +683,7 @@ function saveEvent(){
   if(!ui.pick.length){const first=document.querySelector('#f-drives .pchip');if(first)first.focus();return toast('Add a drive first, then choose where this footage lives')}
   const approx=document.getElementById('f-approx').checked;
   const data={name,driveIds:[...ui.pick],client:document.getElementById('f-client').value.trim(),
+    projectRoot:document.getElementById('f-project').value.trim(),
     tags:document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
     location:document.getElementById('f-loc').value.trim(),note:document.getElementById('f-note').value.trim(),stage:document.getElementById('f-stage').value,approx,
     date:approx?null:(document.getElementById('f-date').value||null),dateDisplay:approx?(document.getElementById('f-datetext').value.trim()||null):null};
@@ -708,6 +738,7 @@ document.addEventListener('click',e=>{
     else if(a==='edit-drive'){openDrive(t.dataset.id)}
     else if(a==='print-drive'){const d=driveById(t.dataset.id);if(d)printDrive(d)}
     else if(a==='tag'){ui.q='';searchInput.value=t.dataset.tag;searchBox.classList.add('has-text');ui.q=t.dataset.tag;render()}
+    else if(a==='project'){ui.q='';searchInput.value='';searchBox.classList.remove('has-text');ui.project=t.dataset.project;ui.sel=null;render();window.scrollTo({top:0,behavior:'smooth'})}
     return;
   }
   if(e.target.closest('#empty-demo')){loadDemo()}
@@ -716,6 +747,7 @@ document.addEventListener('click',e=>{
 overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});
 document.getElementById('view-seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ui.view=b.dataset.view;ui.sel=null;[...e.currentTarget.children].forEach(c=>c.classList.toggle('active',c===b));render()});
 document.getElementById('year-chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ui.year=b.dataset.year;render()});
+document.getElementById('project-filter').addEventListener('change',e=>{ui.project=e.target.value;ui.sel=null;render()});
 document.getElementById('client-filter').addEventListener('change',e=>{ui.client=e.target.value;render()});
 document.getElementById('bk-filter').addEventListener('click',()=>{ui.onlyNoBackup=!ui.onlyNoBackup;render()});
 document.getElementById('sort').addEventListener('change',e=>{ui.sort=e.target.value;render()});
@@ -736,13 +768,13 @@ function loadDemo(){
   const D=(label,kind,name,cap,used,st)=>({id:uid(),label,kind,name:name||'',status:st||'active',capacity:cap??null,used:used??null,capUnit:'TB',note:'',createdAt:Date.now()});
   const d1=D('1','ssd','Samsung T7',2,1.6),d2=D('2','hdd','LaCie',4,3.8,'full'),d3=D('3','hdd','',4,0.6),dc=D('','cloud','Backblaze B2',null,null);
   state.drives=[d1,d2,d3,dc];
-  const E=(name,date,ids,client,tags,opt={})=>({id:uid(),name,date,dateDisplay:opt.dd||null,approx:!!opt.approx,driveIds:ids,client:client||'',tags:tags||[],location:opt.loc||'',note:opt.note||'',createdAt:Date.now()});
+  const E=(name,date,ids,client,tags,opt={})=>({id:uid(),name,date,dateDisplay:opt.dd||null,approx:!!opt.approx,driveIds:ids,client:client||'',projectRoot:opt.project||'',tags:tags||[],location:opt.loc||'',note:opt.note||'',createdAt:Date.now()});
   state.events=[
-    E('Acme Corp conference','2025-10-01',[d1.id,dc.id],'Acme Corp',['corporate','4k']),
-    E('Smith wedding','2025-06-14',[d2.id,dc.id],'Smith',['wedding']),
-    E('City marathon','2025-09-21',[d2.id],'City Sports',['event','drone']),
-    E('Product launch','2025-11-05',[d1.id],'Nova',['corporate']),
-    E('Old archive reel',null,[d3.id],'',['archive'],{dd:'~2022',approx:true})
+    E('Acme Corp conference','2025-10-01',[d1.id,dc.id],'Acme Corp',['corporate','4k'],{project:'ACME_Conference_2025'}),
+    E('Smith wedding','2025-06-14',[d2.id,dc.id],'Smith',['wedding'],{project:'Smith_Wedding_2025'}),
+    E('City marathon','2025-09-21',[d2.id],'City Sports',['event','drone'],{project:'City_Marathon_2025'}),
+    E('Product launch','2025-11-05',[d1.id],'Nova',['corporate'],{project:'Nova_Product_Launch'}),
+    E('Old archive reel',null,[d3.id],'',['archive'],{dd:'~2022',approx:true,project:'Archive_Reels'})
   ];
   save();ui.sel=null;ui.view='drives';render();toast('Sample data loaded')
 }
@@ -750,10 +782,10 @@ function loadDemo(){
 /* ===== extras: CSV, print, theme, help, clear, shortcuts ===== */
 function exportCSV(){
   const Q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
-  const head=['Shoot','Date','Drives','Backed up','Client','Stage','Tags','Location','Note'];
+  const head=['Shoot','Date','Project/root folder','Drives','Backed up','Client','Stage','Tags','Location','Note'];
   const lines=state.events.slice().sort(cmp).map(e=>{
     const dr=e.driveIds.map(id=>{const d=driveById(id);return d?((d.label?'#'+d.label:'')+(d.name?' '+d.name:(d.label?'':kindLabel(d.kind)))).trim():''}).filter(Boolean).join(' | ');
-    return [e.name,fmtDate(e)||'',dr,isBacked(e)?'yes':'no',e.client,e.stage,(e.tags||[]).join(' '),e.location,e.note].map(Q).join(',');
+    return [e.name,fmtDate(e)||'',e.projectRoot,dr,isBacked(e)?'yes':'no',e.client,e.stage,(e.tags||[]).join(' '),e.location,e.note].map(Q).join(',');
   });
   const csv='﻿'+[head.map(Q).join(',')].concat(lines).join('\r\n');
   const b=new Blob([csv],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');
@@ -762,9 +794,9 @@ function exportCSV(){
 document.getElementById('btn-csv').addEventListener('click',exportCSV);
 function printDrive(d){
   const evs=eventsOnDrive(d.id).slice().sort(cmp);
-  const rows=evs.map(e=>'<tr><td>'+esc(fmtDate(e)||'—')+'</td><td>'+esc(e.name)+'</td><td>'+esc(e.client||'')+'</td><td>'+esc((e.tags||[]).join(', '))+'</td></tr>').join('');
+  const rows=evs.map(e=>'<tr><td>'+esc(fmtDate(e)||'—')+'</td><td>'+esc(e.name)+'</td><td>'+esc(e.projectRoot||'')+'</td><td>'+esc(e.client||'')+'</td><td>'+esc((e.tags||[]).join(', '))+'</td></tr>').join('');
   const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print');return}
-  w.document.write('<html><head><meta charset="utf-8"><title>'+esc(driveTitle(d))+'</title><style>body{font:14px -apple-system,Arial,sans-serif;padding:26px;color:#111}h1{font-size:20px;margin:0 0 2px}.s{color:#666;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:14px}td,th{border-bottom:1px solid #ddd;padding:8px 6px;text-align:left;font-size:13px;vertical-align:top}th{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#666}</style></head><body><h1>'+esc(driveTitle(d))+'</h1><div class="s">'+evs.length+' shoots · printed from DiskCat</div><table><tr><th>Date</th><th>Shoot</th><th>Client</th><th>Tags</th></tr>'+rows+'</table></body></html>');
+  w.document.write('<html><head><meta charset="utf-8"><title>'+esc(driveTitle(d))+'</title><style>body{font:14px -apple-system,Arial,sans-serif;padding:26px;color:#111}h1{font-size:20px;margin:0 0 2px}.s{color:#666;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:14px}td,th{border-bottom:1px solid #ddd;padding:8px 6px;text-align:left;font-size:13px;vertical-align:top}th{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#666}</style></head><body><h1>'+esc(driveTitle(d))+'</h1><div class="s">'+evs.length+' shoots · printed from DiskCat</div><table><tr><th>Date</th><th>Shoot</th><th>Project</th><th>Client</th><th>Tags</th></tr>'+rows+'</table></body></html>');
   w.document.close();w.focus();setTimeout(function(){try{w.print()}catch(e){}},300);
 }
 function clearAll(){if(!guardWrite())return;if(!state.drives.length&&!state.events.length){toast('Already empty');return}if(!confirm('Delete ALL drives and shoots from this browser? This cannot be undone — export a backup first if unsure.'))return;state={drives:[],events:[]};save();ui.sel=null;render();toast('Everything cleared')}
@@ -892,9 +924,9 @@ function cloudSubscribe(){
     .subscribe();
 }
 function driveToCloudRow(d){return{archive_id:cloud.archiveId,id:String(d.id),label:d.label||'',name:d.name||'',kind:d.kind||'hdd',status:d.status||'active',capacity:d.capacity==null?null:d.capacity,used:d.used==null?null:d.used,cap_unit:d.capUnit||'TB',note:d.note||'',created_at:d.createdAt||Date.now()}}
-function eventToCloudRow(e){return{archive_id:cloud.archiveId,id:String(e.id),name:e.name||'',event_date:e.date||null,date_display:e.dateDisplay||null,approx:!!e.approx,drive_ids:e.driveIds||[],client:e.client||'',tags:e.tags||[],stage:e.stage||'',location:e.location||'',note:e.note||'',created_at:e.createdAt||Date.now()}}
+function eventToCloudRow(e){return{archive_id:cloud.archiveId,id:String(e.id),name:e.name||'',event_date:e.date||null,date_display:e.dateDisplay||null,approx:!!e.approx,drive_ids:e.driveIds||[],client:e.client||'',project_root:e.projectRoot||'',tags:e.tags||[],stage:e.stage||'',location:e.location||'',note:e.note||'',created_at:e.createdAt||Date.now()}}
 function cloudRowToDrive(d){return{id:d.id,label:d.label||'',name:d.name||'',kind:d.kind||'hdd',status:d.status||'active',capacity:d.capacity==null?null:Number(d.capacity),used:d.used==null?null:Number(d.used),capUnit:d.cap_unit||'TB',note:d.note||'',createdAt:d.created_at||Date.now()}}
-function cloudRowToEvent(e){return{id:e.id,name:e.name||'',date:e.event_date||null,dateDisplay:e.date_display||null,approx:!!e.approx,driveIds:Array.isArray(e.drive_ids)?e.drive_ids:[],client:e.client||'',tags:Array.isArray(e.tags)?e.tags:[],stage:e.stage||'',location:e.location||'',note:e.note||'',createdAt:e.created_at||Date.now()}}
+function cloudRowToEvent(e){return{id:e.id,name:e.name||'',date:e.event_date||null,dateDisplay:e.date_display||null,approx:!!e.approx,driveIds:Array.isArray(e.drive_ids)?e.drive_ids:[],client:e.client||'',projectRoot:e.project_root||'',tags:Array.isArray(e.tags)?e.tags:[],stage:e.stage||'',location:e.location||'',note:e.note||'',createdAt:e.created_at||Date.now()}}
 function cloudRequireClient(){if(cloudInitClient())return true;toast('Paste your Supabase URL and public key first');return false}
 function cloudErr(err,fallback){
   const msg=String(err&&err.message?err.message:err||'');

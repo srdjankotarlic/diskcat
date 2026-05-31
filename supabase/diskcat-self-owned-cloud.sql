@@ -58,6 +58,7 @@ create table if not exists public.events (
   approx boolean not null default false,
   drive_ids text[] not null default '{}',
   client text not null default '',
+  project_root text not null default '',
   tags text[] not null default '{}',
   stage text not null default '',
   location text not null default '',
@@ -66,6 +67,9 @@ create table if not exists public.events (
   updated_at timestamptz not null default now(),
   primary key (archive_id, id)
 );
+
+alter table public.events
+add column if not exists project_root text not null default '';
 
 create index if not exists archive_members_user_idx on public.archive_members (user_id, archive_id);
 create index if not exists archive_invites_code_idx on public.archive_invites (code);

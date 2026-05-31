@@ -19,8 +19,9 @@ Spreadsheets can list drives, but they do not feel like a tool made for footage.
 
 DiskCat gives you a purpose-built archive view:
 
-- Search by shoot, client, tag, stage, year, location, or drive.
+- Search by shoot, project/root folder, client, tag, stage, year, location, or drive.
 - See all copies of a shoot across multiple drives.
+- Group related footage by the top-level project folder that appears across drives.
 - Spot footage that is **not backed up**.
 - Open a drive and instantly see what lives on it.
 - Track drive type, status, capacity, used space, and notes.
@@ -32,8 +33,8 @@ It is designed for the real workflow: shoots pile up across HDDs, SSDs, SD cards
 ## How to use it
 1. **Start local** if you just want a private catalog on this device.
 2. **Add your drives**: choose HDD, SSD, SD card, USB, NAS, cloud, or laptop; add number/name, status, capacity, and note.
-3. **Log footage** with **New entry**: name, date, client/project, tags, stage, location, note, and all drives that contain a copy.
-4. **Use search first**: type a shoot, client, tag, year, or drive number and DiskCat shows exactly where the footage is.
+3. **Log footage** with **New entry**: name, date, project/root folder, client, tags, stage, location, note, and all drives that contain a copy.
+4. **Use search first**: type a shoot, project/root folder, client, tag, year, or drive number and DiskCat shows exactly where the footage is.
 5. **Watch backup status**: one copy is a risk; two or more copies show as backed up.
 6. **Export backups** regularly with **Backup**. You can also export CSV for Excel/Sheets or print a drive's contents.
 
@@ -59,9 +60,10 @@ DiskCat's public GitHub Pages site only hosts the static app files. It does **no
 ## What it does
 - 🗂️ **Drives of every kind** — HDD, SSD, SD/CF card, USB, NAS, cloud, laptop (each with its own icon)
 - 🔎 **Instant search** — find a shoot and see which drive(s) hold it
+- 🧩 **Project/root folder view** — enter the top-level job folder once, then filter every related shoot and drive together
 - ✅ **Backup tracking** — footage saved on 2+ drives shows **✓ backed up**; a counter shows how many shoots are **not** backed up yet
 - 📊 **Space overview** — capacity bars per drive + total **free space** across everything
-- 🏷️ **Clients, tags & stage** — group and filter (raw / edited / delivered / archived)
+- 🏷️ **Projects, clients, tags & stage** — group and filter (raw / edited / delivered / archived)
 - 🔗 **Share via link** — hand your whole list to a colleague with one link (they get an editable copy)
 - ☁️ **Self-owned cloud sync** — use your own Supabase project for owner/editor/viewer roles and public read-only links
 - 🧭 **Guided setup** — Cloud sync includes Copy SQL, Test connection, archive ID copy, and Last synced status

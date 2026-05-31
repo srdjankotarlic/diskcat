@@ -12,6 +12,7 @@ const cloudSetup = readOptional('../docs/CLOUD_SETUP.md');
 const icon = readOptional('../icon.svg');
 const favicon = readOptional('../favicon.svg');
 const manifest = JSON.parse(readOptional('../manifest.webmanifest'));
+const serviceWorker = readOptional('../sw.js');
 
 assert.match(html, /function saveEvent\(\)[\s\S]*Add a drive first/, 'saveEvent must block footage saves without a selected drive');
 assert.match(html, /data-action="edit-event"[\s\S]*aria-label="Edit footage"/, 'event edit icon must have an accessible label');
@@ -26,20 +27,30 @@ assert.match(html, /Copy SQL/, 'cloud UI must let users copy the Supabase SQL se
 assert.match(html, /Test connection/, 'cloud UI must include a connection test action');
 assert.match(html, /Last synced/, 'cloud UI must show sync freshness');
 assert.match(html, /target\.closest\('#empty-demo'\)/, 'sample data card must respond when child text is clicked');
+assert.match(html, /id="f-project"/, 'event form must include a project/root folder field');
+assert.match(html, /id="project-filter"/, 'main controls must include a project filter');
+assert.match(html, /function allProjects\(\)/, 'app must collect project/root folder values for filters and datalists');
+assert.match(html, /function projectSummary/, 'app must render a project-level summary across drives');
+assert.match(html, /projectRoot/, 'event records must persist a projectRoot field');
+assert.match(html, /project_root:e\.projectRoot/, 'cloud event mapping must sync project/root folder data');
+assert.match(html, /data-action="project"/, 'project chips must be clickable to filter related footage');
 assert.match(sql, /alter table public\.archives enable row level security/i, 'cloud SQL must enable RLS on archives');
 assert.match(sql, /alter table public\.drives enable row level security/i, 'cloud SQL must enable RLS on drives');
 assert.match(sql, /alter table public\.events enable row level security/i, 'cloud SQL must enable RLS on events');
+assert.match(sql, /project_root text not null default ''/i, 'cloud SQL must store project/root folder data on events');
 assert.match(sql, /diskcat_public_read_archive/i, 'cloud SQL must include token-gated public read RPC');
 assert.match(sql, /revoke all on public\.archives from anon/i, 'cloud SQL must revoke anonymous direct archive access');
 assert.match(readme + cloudSetup, /does not host your cloud data/i, 'docs must explain that DiskCat does not host user cloud data');
 assert.match(readme, /Why DiskCat instead of a spreadsheet/i, 'README must explain why DiskCat is more useful than a spreadsheet');
 assert.match(readme, /Where your data lives/i, 'README must clearly explain data ownership modes');
 assert.match(readme, /maintainer does not host your cloud data/i, 'README must clearly state maintainer is not hosting user cloud data');
+assert.match(readme, /project\/root folder/i, 'README must document project/root folder tracking');
 assert.match(icon, /DiskCat purple cat app icon/, 'main app icon must use the purple DiskCat cat mark');
 assert.match(icon, /dc-purple-cat-mark/, 'main app icon must include the purple cat brand mark');
 assert.match(favicon, /DiskCat compact purple cat mark/, 'favicon must use the compact purple DiskCat cat mark');
 assert.match(html, /class="dc-logo-mark"/, 'header must use the same compact DiskCat logo mark');
 assert.match(html, /name="mobile-web-app-capable"/, 'web app metadata must include the modern install-capable tag');
 assert.match(manifest.description, /Drive & Footage Catalog/i, 'manifest description must describe DiskCat as a drive and footage catalog');
+assert.match(serviceWorker, /diskcat-v6/, 'service worker cache version must be bumped for the project/root folder release');
 
 console.log('diskcat-static-checks: ok');
