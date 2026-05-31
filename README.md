@@ -1,8 +1,12 @@
 # 📀 DiskCat
 
-**Know which drive your footage is on — instantly.**
+**Know which drive your footage is on, instantly.**
 
-A free, offline-first tool for video & production people to catalog which storage drive holds the footage from each shoot. No signup is needed for local use, and optional cloud sync uses your own Supabase project.
+DiskCat is an offline-first catalog for video, photo, live-production, and archive teams. It answers the question that spreadsheets are bad at answering under pressure:
+
+> “Which drive has that shoot, and is it backed up?”
+
+No signup is needed for local use. Optional cloud sync is self-owned: every user or team connects their own Supabase project, so the DiskCat maintainer does not host, process, or maintain other people's archive data.
 
 ### ▶️ Use it now: https://srdjankotarlic.github.io/diskcat/
 
@@ -10,22 +14,47 @@ A free, offline-first tool for video & production people to catalog which storag
 
 ---
 
-## The problem it solves
-Footage piles up across dozens of drives, SD cards and laptops — and six months later, *which one* was that shoot on? DiskCat is a tiny, searchable catalog so you always know — and whether it's backed up.
+## Why DiskCat instead of a spreadsheet?
+Spreadsheets can list drives, but they do not feel like a tool made for footage.
 
-## How to use it — 3 steps
-1. **Add your drives** — click **Add drive**: pick the type (HDD, SSD, SD card, USB, NAS, cloud, laptop), give it a number/name, and (optionally) its size.
-2. **Log your shoots** — click **＋ New entry**: name, date, and tick **which drive(s)** it's on. Optionally add client, tags, or stage (raw / edited / delivered).
-3. **Find anything** — type in the **search** (shoot, client, tag, year) and instantly see which drive(s) it's on. Or browse **Drives** to see what's on each.
+DiskCat gives you a purpose-built archive view:
 
-That's the whole app — it's meant to be obvious. Open it and you'll get it in 30 seconds (there's a **?** help button in the corner too).
+- Search by shoot, client, tag, stage, year, location, or drive.
+- See all copies of a shoot across multiple drives.
+- Spot footage that is **not backed up**.
+- Open a drive and instantly see what lives on it.
+- Track drive type, status, capacity, used space, and notes.
+- Print a drive sheet or export CSV/JSON when needed.
+- Work locally, install like an app, or sync through your own cloud.
 
-## Get it / install — pick one (all easy)
-- **Just open the link** → https://srdjankotarlic.github.io/diskcat/ — works immediately.
-- **Make it an app** → in Chrome/Edge on **Windows or Mac**, click **“Install app”** in the address bar; on a **phone**, use **Add to Home Screen**. One click, no App Store installer, works offline.
-- **Download one file** → grab **[`diskcat.html`](https://github.com/srdjankotarlic/diskcat/releases/latest/download/diskcat.html)** and double-click it. The whole app is that single file.
+It is designed for the real workflow: shoots pile up across HDDs, SSDs, SD cards, laptops, NAS units, and cloud buckets. Six months later, DiskCat should get you to the right drive in seconds.
+
+## How to use it
+1. **Start local** if you just want a private catalog on this device.
+2. **Add your drives**: choose HDD, SSD, SD card, USB, NAS, cloud, or laptop; add number/name, status, capacity, and note.
+3. **Log footage** with **New entry**: name, date, client/project, tags, stage, location, note, and all drives that contain a copy.
+4. **Use search first**: type a shoot, client, tag, year, or drive number and DiskCat shows exactly where the footage is.
+5. **Watch backup status**: one copy is a risk; two or more copies show as backed up.
+6. **Export backups** regularly with **Backup**. You can also export CSV for Excel/Sheets or print a drive's contents.
+
+## Get it / install
+- **Use in browser**: https://srdjankotarlic.github.io/diskcat/
+- **Install as an app**: open the site in Chrome/Edge and choose **Install app**. On phones, use **Add to Home Screen**.
+- **Use one local file**: download `diskcat.html` and open it directly.
+- **Self-host**: put the static files on GitHub Pages, Netlify, Cloudflare Pages, any simple web host, or a local server.
 
 Local mode needs no accounts and no setup. Cloud sync is optional and self-owned.
+
+## Where your data lives
+
+| Mode | Where the archive is stored | Who is responsible for it |
+| --- | --- | --- |
+| Local browser/app | This browser or installed app profile | You |
+| Local file backup | The `.json` backup file you export | You |
+| Snapshot share link | Inside the URL you send | Sender/recipient |
+| Cloud sync | Your own Supabase project | The person/team that owns that Supabase project |
+
+DiskCat's public GitHub Pages site only hosts the static app files. It does **not** include a default database, maintainer account, service key, or hosted data store.
 
 ## What it does
 - 🗂️ **Drives of every kind** — HDD, SSD, SD/CF card, USB, NAS, cloud, laptop (each with its own icon)
@@ -48,7 +77,9 @@ Local mode needs no accounts and no setup. Cloud sync is optional and self-owned
 Full setup: [docs/CLOUD_SETUP.md](docs/CLOUD_SETUP.md)
 
 ## Your data & privacy
-In local mode, everything is stored **in your browser only**. In cloud mode, data is uploaded only to the Supabase project you entered in **Cloud sync**. The public DiskCat app ships without a default database, so the maintainer is not storing other people's archives.
+In local mode, everything is stored **in your browser or installed app only**. In cloud mode, data is uploaded only to the Supabase project you entered in **Cloud sync**.
+
+The maintainer does not host your cloud data and is not responsible for user-created Supabase projects, user-entered archive data, backups, permissions, or billing settings.
 
 Click **Export** now and then to keep a backup file. To move without cloud: **Export** on one device, **Import** on the other.
 

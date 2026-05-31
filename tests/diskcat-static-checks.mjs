@@ -29,5 +29,8 @@ assert.match(sql, /alter table public\.events enable row level security/i, 'clou
 assert.match(sql, /diskcat_public_read_archive/i, 'cloud SQL must include token-gated public read RPC');
 assert.match(sql, /revoke all on public\.archives from anon/i, 'cloud SQL must revoke anonymous direct archive access');
 assert.match(readme + cloudSetup, /does not host your cloud data/i, 'docs must explain that DiskCat does not host user cloud data');
+assert.match(readme, /Why DiskCat instead of a spreadsheet/i, 'README must explain why DiskCat is more useful than a spreadsheet');
+assert.match(readme, /Where your data lives/i, 'README must clearly explain data ownership modes');
+assert.match(readme, /maintainer does not host your cloud data/i, 'README must clearly state maintainer is not hosting user cloud data');
 
 console.log('diskcat-static-checks: ok');
