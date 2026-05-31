@@ -23,10 +23,11 @@ If you shoot video, you know the pain: footage spread across dozens of drives, S
 - **Export / Import** — one-click JSON backup you fully control
 
 ## How to use it (3 ways)
-1. **Just open the link** → [open DiskCat](https://srdjankotarlic.github.io/diskcat/). It works immediately; your data is saved in your browser.
-   - On a phone: open the link → browser menu → **Add to Home Screen**. Now it behaves like an installed app.
-2. **Download a copy** → grab `index.html` from this repo and double-click it. Runs locally, even offline.
-3. **Host your own** → it's plain static files (`index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`). Drop them on any free host (Netlify, Cloudflare Pages, GitHub Pages).
+1. **Try it live** → https://srdjankotarlic.github.io/diskcat/ — works immediately, data saved in your browser. On a phone: browser menu → **Add to Home Screen** to use it like an app (even offline).
+2. **Download the app (one file)** → get **[`diskcat.html`](https://github.com/srdjankotarlic/diskcat/releases/latest/download/diskcat.html)** and double-click it. A single self-contained file that runs in any browser, fully offline. **Once downloaded it is completely yours and standalone — it does not connect back to this repo, this site, or anyone's account.**
+3. **Host it for a team / your own address** → it's plain static files; drop the repo on any free host (Netlify, Cloudflare Pages, GitHub Pages).
+
+> **Standalone & private:** the app never sends your data anywhere — everything is saved locally in your browser (`localStorage`). The only network request is to Google Fonts (cosmetic; it falls back to system fonts offline). Nothing depends on the author's GitHub once you have the file.
 
 ## Data & privacy
 All data lives in your browser's `localStorage` — nothing is uploaded anywhere. Use **Export** now and then to keep a backup file. To move to another device, Export on one and Import on the other.
