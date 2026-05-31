@@ -1,0 +1,13 @@
+{
+  "name": "DiskCat — Drive & Footage Catalog",
+  "short_name": "DiskCat",
+  "description": "Track which drive holds footage from which shoot. Works offline, no signup.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#070809",
+  "theme_color": "#070809",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
