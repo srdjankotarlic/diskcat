@@ -7,8 +7,43 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="115" fill="url(#g)"/>
-  <rect x="116" y="150" width="280" height="212" rx="36" fill="none" stroke="#0b0d12" stroke-width="26"/>
-  <line x1="116" y1="256" x2="396" y2="256" stroke="#0b0d12" stroke-width="26"/>
-  <circle cx="170" cy="312" r="16" fill="#0b0d12"/>
-  <line x1="214" y1="312" x2="342" y2="312" stroke="#0b0d12" stroke-width="26" stroke-linecap="round"/>
+
+  <!-- ears -->
+  <path d="M150 205 L110 64 L252 168 Z" fill="#fdf4e9"/>
+  <path d="M362 205 L402 64 L260 168 Z" fill="#fdf4e9"/>
+  <path d="M170 190 L140 92 L232 166 Z" fill="#ff86ac"/>
+  <path d="M342 190 L372 92 L280 166 Z" fill="#ff86ac"/>
+
+  <!-- head (bottom hidden behind the drive) -->
+  <ellipse cx="256" cy="252" rx="150" ry="150" fill="#fdf4e9"/>
+
+  <!-- blush -->
+  <circle cx="172" cy="292" r="20" fill="#ff86ac" opacity=".5"/>
+  <circle cx="340" cy="292" r="20" fill="#ff86ac" opacity=".5"/>
+
+  <!-- whiskers -->
+  <g stroke="#15161d" stroke-width="5" stroke-linecap="round" opacity=".5">
+    <line x1="74" y1="252" x2="182" y2="262"/>
+    <line x1="70" y1="286" x2="180" y2="288"/>
+    <line x1="438" y1="252" x2="330" y2="262"/>
+    <line x1="442" y1="286" x2="332" y2="288"/>
+  </g>
+
+  <!-- eyes -->
+  <ellipse cx="202" cy="240" rx="23" ry="31" fill="#15161d"/>
+  <ellipse cx="310" cy="240" rx="23" ry="31" fill="#15161d"/>
+  <circle cx="194" cy="228" r="8" fill="#fff"/>
+  <circle cx="302" cy="228" r="8" fill="#fff"/>
+
+  <!-- nose + mouth -->
+  <path d="M240 296 H272 L256 313 Z" fill="#ff6f9c"/>
+  <path d="M256 313 q-16 23 -34 11 M256 313 q16 23 34 11" fill="none" stroke="#15161d" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- drive the cat peeks over -->
+  <rect x="86" y="352" width="340" height="96" rx="22" fill="#11131b"/>
+  <rect x="116" y="374" width="252" height="12" rx="6" fill="#ffffff" opacity=".12"/>
+  <circle cx="388" cy="400" r="10" fill="#34d8c4"/>
+  <!-- paws gripping the edge -->
+  <rect x="196" y="336" width="42" height="34" rx="15" fill="#fdf4e9"/>
+  <rect x="274" y="336" width="42" height="34" rx="15" fill="#fdf4e9"/>
 </svg>
