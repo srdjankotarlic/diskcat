@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DiskCat — Catalog your drives & footage</title>
-<meta name="description" content="A simple, free catalog for video & production people: track which drive holds footage from which shoot. Works offline, no signup.">
+<title>DiskCat — Drive & Footage Catalog</title>
+<meta name="description" content="A free Drive & Footage Catalog for video, photo, production, and archive teams. Works offline with optional self-owned cloud sync.">
 <meta name="theme-color" content="#070809">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="DiskCat">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,8 +40,8 @@
   .chrome{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.72);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);border-bottom:1px solid var(--border)}
   .chrome-inner{max-width:1240px;margin:0 auto;padding:13px 26px;display:flex;align-items:center;gap:20px}
   .brand{display:flex;align-items:center;gap:13px;min-width:0;cursor:pointer}
-  .logo{position:relative;width:40px;height:40px;border-radius:12px;background:var(--grad);display:grid;place-items:center;flex:none;box-shadow:0 8px 22px -8px var(--glow),inset 0 1px 0 rgba(255,255,255,.4)}
-  .logo svg{width:22px;height:22px}
+  .logo{position:relative;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#9b96ff,#7d83ff 55%,#6972f2);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center;flex:none;box-shadow:0 8px 22px -9px rgba(111,123,255,.72),inset 0 1px 0 rgba(255,255,255,.38)}
+  .logo svg{width:28px;height:28px}
   .brand-name{font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1;white-space:nowrap}
   .brand-name b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
   .brand-sub{font-size:11px;color:var(--text-3);margin-top:4px;font-weight:500}
@@ -239,10 +240,10 @@
 <header class="chrome">
   <div class="chrome-inner">
     <div class="brand" data-action="home" title="Home" role="button" tabindex="0" aria-label="Go to home">
-      <div class="logo"><svg viewBox="0 0 512 512" fill="none"><path d="M150 205 L110 70 L252 170 Z" fill="#fdf4e9"/><path d="M362 205 L402 70 L260 170 Z" fill="#fdf4e9"/><path d="M170 192 L142 100 L232 168 Z" fill="#ff86ac"/><path d="M342 192 L370 100 L280 168 Z" fill="#ff86ac"/><ellipse cx="256" cy="268" rx="150" ry="148" fill="#fdf4e9"/><ellipse cx="202" cy="256" rx="23" ry="30" fill="#15161d"/><ellipse cx="310" cy="256" rx="23" ry="30" fill="#15161d"/><circle cx="194" cy="245" r="7" fill="#fff"/><circle cx="302" cy="245" r="7" fill="#fff"/><path d="M240 310 H272 L256 326 Z" fill="#ff6f9c"/><path d="M256 326 q-16 22 -34 11 M256 326 q16 22 34 11" stroke="#15161d" stroke-width="7" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo"><svg class="dc-logo-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="m18.7 29.6-3.9-16.9c-.2-1.3 1.2-2.1 2.2-1.2l12.6 10.9" fill="#FFF7E8"/><path d="m45.3 29.6 3.9-16.9c.2-1.3-1.2-2.1-2.2-1.2L34.4 22.4" fill="#FFF7E8"/><path d="m21.8 27.2-2.3-10.8 7.8 7.1" fill="#FFC3D6"/><path d="m42.2 27.2 2.3-10.8-7.8 7.1" fill="#FFC3D6"/><ellipse cx="32" cy="38" rx="18.5" ry="17" fill="#FFF7E8"/><ellipse cx="25.2" cy="35.8" rx="2.2" ry="3.4" fill="#22253B"/><ellipse cx="38.8" cy="35.8" rx="2.2" ry="3.4" fill="#22253B"/><circle cx="24.5" cy="34.5" r=".8" fill="#fff"/><circle cx="38.1" cy="34.5" r=".8" fill="#fff"/><path d="M29.9 42.8h4.2L32 45l-2.1-2.2Z" fill="#FF7FA5"/><path d="M32 44.7c-1.7 2.3-3.4 2.8-5.2 1.7M32 44.7c1.7 2.3 3.4 2.8 5.2 1.7" stroke="#22253B" stroke-linecap="round" stroke-width="1.5"/></svg></div>
       <div>
         <div class="brand-name">Disk<b>Cat</b></div>
-        <div class="brand-sub">Catalog your drives &amp; footage</div>
+        <div class="brand-sub">Drive &amp; footage catalog</div>
       </div>
     </div>
     <div class="top-right">

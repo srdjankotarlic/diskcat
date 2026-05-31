@@ -1,7 +1,7 @@
 {
   "name": "DiskCat — Drive & Footage Catalog",
   "short_name": "DiskCat",
-  "description": "Track which drive holds footage from which shoot. Works offline, no signup.",
+  "description": "Drive & Footage Catalog for shoots, clients, tags, and physical storage. Works offline with optional self-owned cloud sync.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

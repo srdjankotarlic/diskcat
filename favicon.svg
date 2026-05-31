@@ -1,35 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">DiskCat compact purple cat mark</title>
+  <desc id="desc">Compact purple DiskCat icon with a white cat face.</desc>
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#b3a6ff"/>
-      <stop offset=".5" stop-color="#828dff"/>
-      <stop offset="1" stop-color="#6f7bff"/>
+    <linearGradient id="tile" x1="70" y1="54" x2="442" y2="462" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9B96FF"/>
+      <stop offset=".55" stop-color="#7D83FF"/>
+      <stop offset="1" stop-color="#6972F2"/>
+    </linearGradient>
+    <linearGradient id="cat" x1="154" y1="93" x2="358" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#FFF2DD"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="115" fill="url(#g)"/>
-  <!-- ears -->
-  <path d="M150 215 L104 56 L264 176 Z" fill="#fdf4e9"/>
-  <path d="M362 215 L408 56 L248 176 Z" fill="#fdf4e9"/>
-  <path d="M172 198 L138 86 L242 172 Z" fill="#ff86ac"/>
-  <path d="M340 198 L374 86 L270 172 Z" fill="#ff86ac"/>
-  <!-- head -->
-  <ellipse cx="256" cy="298" rx="172" ry="166" fill="#fdf4e9"/>
-  <!-- blush -->
-  <circle cx="166" cy="330" r="24" fill="#ff86ac" opacity=".5"/>
-  <circle cx="346" cy="330" r="24" fill="#ff86ac" opacity=".5"/>
-  <!-- whiskers -->
-  <g stroke="#15161d" stroke-width="6" stroke-linecap="round" opacity=".45">
-    <line x1="60" y1="300" x2="190" y2="308"/>
-    <line x1="56" y1="342" x2="188" y2="340"/>
-    <line x1="452" y1="300" x2="322" y2="308"/>
-    <line x1="456" y1="342" x2="324" y2="340"/>
-  </g>
-  <!-- eyes -->
-  <ellipse cx="200" cy="288" rx="26" ry="35" fill="#15161d"/>
-  <ellipse cx="312" cy="288" rx="26" ry="35" fill="#15161d"/>
-  <circle cx="191" cy="275" r="9" fill="#fff"/>
-  <circle cx="303" cy="275" r="9" fill="#fff"/>
-  <!-- nose + mouth -->
-  <path d="M236 350 H276 L256 369 Z" fill="#ff6f9c"/>
-  <path d="M256 369 q-19 26 -39 12 M256 369 q19 26 39 12" fill="none" stroke="#15161d" stroke-width="8" stroke-linecap="round"/>
+  <rect width="512" height="512" rx="116" fill="url(#tile)"/>
+  <rect x="20" y="20" width="472" height="472" rx="96" fill="none" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="2"/>
+  <path d="M155 238 124 101c-2-11 11-18 20-10l102 88" fill="url(#cat)"/>
+  <path d="M357 238 388 101c2-11-11-18-20-10l-102 88" fill="url(#cat)"/>
+  <path d="M179 218 160 130l63 58" fill="#FFC3D6"/>
+  <path d="M333 218 352 130l-63 58" fill="#FFC3D6"/>
+  <ellipse cx="256" cy="304" rx="148" ry="136" fill="url(#cat)"/>
+  <ellipse cx="202" cy="287" rx="18" ry="27" fill="#22253B"/>
+  <ellipse cx="310" cy="287" rx="18" ry="27" fill="#22253B"/>
+  <circle cx="196" cy="277" r="6" fill="#FFFFFF"/>
+  <circle cx="304" cy="277" r="6" fill="#FFFFFF"/>
+  <path d="M239 343h34l-17 17-17-17Z" fill="#FF7FA5"/>
+  <path d="M256 359c-12 17-25 21-38 12M256 359c12 17 25 21 38 12" fill="none" stroke="#22253B" stroke-linecap="round" stroke-width="7"/>
 </svg>
