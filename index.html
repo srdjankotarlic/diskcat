@@ -195,6 +195,20 @@
     .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.disk-num{font-size:40px}
   }
   @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.05ms!important}}
+  .icon-top{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);transition:.15s}
+  .icon-top:hover{background:var(--hover);color:var(--text)}.icon-top svg{width:18px;height:18px}
+  .stage{font-size:10px;font-weight:700;letter-spacing:.04em;padding:4px 8px;border-radius:7px;white-space:nowrap;border:1px solid;text-transform:uppercase}
+  .stage.raw{color:var(--text-2);background:var(--surface-3);border-color:var(--border)}
+  .stage.edited{color:var(--amber);background:rgba(255,180,84,.1);border-color:rgba(255,180,84,.25)}
+  .stage.delivered{color:var(--ok);background:rgba(61,220,151,.12);border-color:rgba(61,220,151,.3)}
+  .stage.archived{color:var(--text-3);background:var(--surface-3);border-color:var(--border)}
+  .help-body{font-size:13.5px;color:var(--text-2);line-height:1.65;max-height:62vh;overflow:auto}
+  .help-body h4{color:var(--text);font-size:13.5px;margin:15px 0 5px}.help-body p{margin-bottom:8px}.help-body b{color:var(--text)}
+  .help-body .k{font-family:'JetBrains Mono',monospace;background:var(--surface-3);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:12px}
+  html[data-theme="light"]{--bg:#eef1f6;--bg-2:#fff;--surface:#fff;--surface-2:#f6f8fb;--surface-3:#eceff5;--hover:#e6eaf1;--border:rgba(20,24,40,.10);--border-2:rgba(20,24,40,.17);--text:#161922;--text-2:#454c5b;--text-3:#838b9c;--glow:rgba(124,138,255,.20)}
+  html[data-theme="light"] body{background:radial-gradient(1100px 560px at 84% -16%,rgba(124,138,255,.10),transparent 58%),var(--bg)}
+  html[data-theme="light"] .chrome{background:rgba(255,255,255,.8)}
+  html[data-theme="light"] .disk,html[data-theme="light"] .kpi,html[data-theme="light"] .row,html[data-theme="light"] .modal{box-shadow:0 8px 22px -16px rgba(20,24,40,.4)}
 </style>
 </head>
 <body>
@@ -209,6 +223,8 @@
       </div>
     </div>
     <div class="top-right">
+      <button class="icon-top" id="btn-theme" title="Light / dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
+      <button class="icon-top" id="btn-help" title="How it works"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
       <button class="btn btn-primary" id="btn-new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> New entry</button>
       <input type="file" id="file-import" accept="application/json" style="display:none">
     </div>
@@ -236,6 +252,7 @@
     <div class="chips" id="year-chips"></div>
     <select class="mini" id="client-filter"></select>
     <button class="toggle-filter" id="bk-filter" title="Show only footage that is NOT backed up">⚠ Not backed up</button>
+    <select class="mini" id="stage-filter"></select>
     <select class="mini" id="sort">
       <option value="date_desc">Date ↓ (newest)</option>
       <option value="date_asc">Date ↑ (oldest)</option>
@@ -247,7 +264,7 @@
 
   <div class="foot">
     <b>DiskCat</b> · free &amp; offline · your data stays in this browser<br>
-    <span class="foot-actions"><button id="btn-export" class="foot-link" title="Download a backup (.json)">↓ Export backup</button><button id="btn-import" class="foot-link" title="Load a backup (.json)">↑ Import</button><button id="btn-demo" class="foot-link" title="Load sample data">✦ Sample data</button></span>
+    <span class="foot-actions"><button id="btn-export" class="foot-link" title="Download a JSON backup">↓ Backup</button><button id="btn-csv" class="foot-link" title="Export to CSV (Excel/Sheets)">↓ CSV</button><button id="btn-import" class="foot-link" title="Load a backup (.json)">↑ Import</button><button id="btn-demo" class="foot-link" title="Load sample data">✦ Sample</button><button id="btn-clear" class="foot-link" title="Delete everything in this browser">🗑 Clear all</button></span>
   </div>
 </div>
 
@@ -267,8 +284,9 @@
     <div class="field"><label>On which drive(s)? <span style="color:var(--text-3);font-weight:400">— tick all copies (2+ = backed up)</span></label><div class="pick" id="f-drives"></div></div>
     <div class="field-row">
       <div class="field"><label>Tags <span style="color:var(--text-3);font-weight:400">(comma separated)</span></label><input type="text" id="f-tags" placeholder="wedding, drone, 4k" autocomplete="off"></div>
-      <div class="field"><label>Location <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="text" id="f-loc" placeholder="e.g. Hilton" autocomplete="off"></div>
+      <div class="field" style="max-width:150px"><label>Stage</label><select id="f-stage"><option value="">—</option><option value="raw">Raw</option><option value="edited">Edited</option><option value="delivered">Delivered</option><option value="archived">Archived</option></select></div>
     </div>
+    <div class="field"><label>Location <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="text" id="f-loc" placeholder="e.g. Hilton" autocomplete="off"></div>
     <div class="field"><label>Note <span style="color:var(--text-3);font-weight:400">(optional)</span></label><textarea id="f-note" placeholder=""></textarea></div>
     <div class="modal-actions">
       <button class="btn btn-danger" id="f-delete" style="display:none">Delete</button>
@@ -313,6 +331,20 @@
       <button class="btn btn-primary" id="d-save">Save</button>
     </div>
   </div>
+
+  <div class="modal" id="modal-help" style="display:none">
+    <h3>📀 About DiskCat</h3>
+    <div class="help-body">
+      <p><b>DiskCat</b> keeps track of which drive holds the footage from which shoot — so you find it in seconds instead of digging through drives.</p>
+      <h4>Find footage</h4><p>Type a shoot name, client, tag or year in the <b>search</b> — you'll see which drive(s) it's on. Or open <b>Drives</b> and click one.</p>
+      <h4>Add footage</h4><p>Click <b>＋ New entry</b>, name it, set the date, tick <b>which drive(s)</b> it's on (tick 2+ = backed up), add client / tags / stage. Save.</p>
+      <h4>Backups</h4><p>Footage on 2+ drives shows <b>✓ backed up</b>. The top counter shows how many shoots are <b>not</b> backed up yet.</p>
+      <h4>Your data</h4><p>Everything is stored <b>in this browser only</b> — nothing is uploaded. Use <b>Export</b> for a backup file; <b>Import</b> to restore or move to another device.</p>
+      <h4>Install (phone)</h4><p>Browser menu → <b>Add to Home Screen</b>. It then works like an app, even offline.</p>
+      <h4>Shortcuts</h4><p><span class="k">/</span> search · <span class="k">N</span> new entry · <span class="k">Esc</span> close</p>
+    </div>
+    <div class="modal-actions"><div class="grow"></div><button class="btn btn-primary" id="help-close">Got it</button></div>
+  </div>
 </div>
 
 <button class="fab" id="fab-new" title="New entry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> New entry</button>
@@ -342,13 +374,13 @@ function kindLabel(k){return KINDS[k]||'Drive'}
 /* ===== state ===== */
 const KEY='diskcat.v1';
 let state={drives:[],events:[]};
-let ui={view:'drives',q:'',sort:'date_desc',year:'all',client:'all',onlyNoBackup:false,sel:null,editEv:null,editDrv:null,pick:[]};
+let ui={view:'drives',q:'',sort:'date_desc',year:'all',client:'all',onlyNoBackup:false,stage:'all',sel:null,editEv:null,editDrv:null,pick:[]};
 function uid(){return 'x'+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);if(r){state=JSON.parse(r);migrate();return}}catch(e){}}
 function migrate(){
   (state.drives||[]).forEach(d=>{if(!d.kind)d.kind='hdd';['label','name','note'].forEach(k=>{if(d[k]==null)d[k]=''});if(!d.status)d.status='active';if(d.capacity===undefined)d.capacity=null;if(d.used===undefined)d.used=null;if(!d.capUnit)d.capUnit='TB'});
-  (state.events||[]).forEach(e=>{if(!Array.isArray(e.driveIds))e.driveIds=e.driveId?[e.driveId]:[];if(!Array.isArray(e.tags))e.tags=[];['name','client','location','note'].forEach(k=>{if(e[k]==null)e[k]=''})});
+  (state.events||[]).forEach(e=>{if(!Array.isArray(e.driveIds))e.driveIds=e.driveId?[e.driveId]:[];if(!Array.isArray(e.tags))e.tags=[];['name','client','location','note'].forEach(k=>{if(e[k]==null)e[k]=''});if(e.stage==null)e.stage=''});
 }
 
 /* ===== helpers ===== */
@@ -365,14 +397,14 @@ function fmtDate(e){if(e.dateDisplay)return e.dateDisplay;if(e.date){const[y,m,d
 function allYears(){const s=new Set();state.events.forEach(e=>{const y=getYear(e);if(y)s.add(y)});return[...s].sort((a,b)=>b.localeCompare(a))}
 function allClients(){const s=new Set();state.events.forEach(e=>{if(e.client)s.add(e.client)});return[...s].sort((a,b)=>a.localeCompare(b))}
 function cmp(a,b){if(ui.sort==='name')return a.name.localeCompare(b.name);const ad=a.date||'',bd=b.date||'';if(!ad&&!bd)return a.name.localeCompare(b.name);if(!ad)return 1;if(!bd)return -1;return ui.sort==='date_asc'?ad.localeCompare(bd):bd.localeCompare(ad)}
-function matchQ(e){const q=ui.q.trim().toLowerCase();if(!q)return true;const dn=e.driveIds.map(id=>{const d=driveById(id);return d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''}).join(' ');const hay=[e.name,e.client,e.tags.join(' '),e.location,e.note,fmtDate(e)||'',getYear(e)||'',dn].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
-function passFilters(e){if(ui.year!=='all'&&getYear(e)!==ui.year)return false;if(ui.client!=='all'&&e.client!==ui.client)return false;if(ui.onlyNoBackup&&isBacked(e))return false;return true}
+function matchQ(e){const q=ui.q.trim().toLowerCase();if(!q)return true;const dn=e.driveIds.map(id=>{const d=driveById(id);return d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''}).join(' ');const hay=[e.name,e.client,e.tags.join(' '),e.location,e.note,e.stage||'',fmtDate(e)||'',getYear(e)||'',dn].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
+function passFilters(e){if(ui.year!=='all'&&getYear(e)!==ui.year)return false;if(ui.client!=='all'&&e.client!==ui.client)return false;if(ui.onlyNoBackup&&isBacked(e))return false;if(ui.stage!=='all'&&(e.stage||'')!==ui.stage)return false;return true}
 
 /* ===== render ===== */
 const content=document.getElementById('content');
 const searchInput=document.getElementById('search'),searchBox=document.getElementById('search-box');
 function render(){
-  renderYearChips();renderClientFilter();renderOverview();
+  renderYearChips();renderClientFilter();renderStageFilter();renderOverview();
   document.getElementById('bk-filter').classList.toggle('on',ui.onlyNoBackup);
   const searching=ui.q.trim().length>0;
   document.getElementById('view-seg').style.opacity=(searching||ui.sel)?'.4':'1';
@@ -399,6 +431,9 @@ function renderOverview(){
 }
 function renderYearChips(){const ys=allYears();document.getElementById('year-chips').innerHTML='<button class="chip '+(ui.year==='all'?'active':'')+'" data-year="all">ALL</button>'+ys.map(y=>'<button class="chip '+(ui.year===y?'active':'')+'" data-year="'+y+'">'+y+'</button>').join('')}
 function renderClientFilter(){const cs=allClients();const sel=document.getElementById('client-filter');sel.style.display=cs.length?'':'none';sel.innerHTML='<option value="all">All clients</option>'+cs.map(c=>'<option value="'+esc(c)+'"'+(ui.client===c?' selected':'')+'>'+esc(c)+'</option>').join('')}
+function renderStageFilter(){const sel=document.getElementById('stage-filter');const o=[['all','All stages'],['raw','Raw'],['edited','Edited'],['delivered','Delivered'],['archived','Archived']];sel.innerHTML=o.map(p=>'<option value="'+p[0]+'"'+(ui.stage===p[0]?' selected':'')+'>'+p[1]+'</option>').join('')}
+const STAGEL={raw:'Raw',edited:'Edited',delivered:'Delivered',archived:'Archived'};
+function stageBadge(e){return e.stage?'<span class="stage '+e.stage+'">'+STAGEL[e.stage]+'</span>':''}
 
 function driveCard(d,i){
   const evs=eventsOnDrive(d.id);
@@ -433,7 +468,7 @@ function renderList(){
 function renderSearch(){
   let items=state.events.filter(e=>matchQ(e)&&passFilters(e)).sort(cmp);
   const q=esc(ui.q.trim());
-  if(!items.length)return content.innerHTML=emptyState('No results for “'+q+'”','Check spelling or add a new entry.',false);
+  if(!items.length)return content.innerHTML='<div class="empty"><div class="empty-ico">'+I.search+'</div><h3>No results for “'+q+'”</h3><p>Nothing matches that yet.</p><div class="row-btns"><button class="btn btn-primary" id="quick-add">'+I.plus+' Add “'+q+'” as a shoot</button></div></div>';
   content.innerHTML='<div class="detail-head"><div class="detail-title"><h2>Results</h2></div><div class="detail-sub">'+items.length+' for “'+q+'”</div></div><div class="list">'+items.map(e=>eventRow(e,true)).join('')+'</div>';
 }
 function renderDriveDetail(id){
@@ -445,6 +480,7 @@ function renderDriveDetail(id){
   if(ci)sub+=' · '+fmtNum(ci.used)+'/'+fmtNum(ci.total)+' '+ci.unit+' ('+ci.free+' '+ci.unit+' free)';
   let html='<div class="detail-head"><button class="back" data-action="home">'+I.back+' All drives</button>'+
     '<div class="detail-title"><h2>'+(d.label?'Drive <span class="dnum mono">'+esc(d.label)+'</span>':esc(kindLabel(d.kind)))+(d.name?' <span class="detail-sub">'+esc(d.name)+'</span>':'')+'</h2><span class="dot '+d.status+'"></span><span class="detail-sub">'+sub+'</span></div>'+
+    '<button class="btn btn-ghost" data-action="print-drive" data-id="'+d.id+'" style="margin-left:auto">🖨 Print</button>'+
     '<button class="btn btn-ghost" data-action="edit-drive" data-id="'+d.id+'">'+I.gear+' Drive</button>'+
     '<button class="btn btn-primary" data-action="add-to-drive" data-id="'+d.id+'">'+I.plus+' Add shoot</button></div>';
   html+=items.length?'<div class="list">'+items.map(e=>eventRow(e,false)).join('')+'</div>':emptyState('No shoots on this drive yet','Click “Add shoot” to log the first one.',false);
@@ -458,7 +494,7 @@ function eventRow(e,showDrives){
   const tags=e.tags.map(t=>'<span class="tag" data-action="tag" data-tag="'+esc(t)+'">#'+esc(t)+'</span>').join('');
   const meta=(showDrives?badges:'')+(e.client?'<span class="meta-chip">'+esc(e.client)+'</span>':'')+(e.location?'<span class="meta-chip">'+esc(e.location)+'</span>':'')+tags+(e.note?'<span class="meta-note">'+esc(e.note)+'</span>':'');
   return '<div class="row"><div class="row-date '+(d?'':'no')+'">'+(d?esc(d):'—')+'</div>'+
-    '<div class="row-main"><div class="row-name">'+esc(e.name)+(e.approx?'<span class="approx">~</span>':'')+' '+bk+'</div>'+(meta?'<div class="row-meta">'+meta+'</div>':'')+'</div>'+
+    '<div class="row-main"><div class="row-name">'+esc(e.name)+(e.approx?'<span class="approx">~</span>':'')+' '+bk+' '+stageBadge(e)+'</div>'+(meta?'<div class="row-meta">'+meta+'</div>':'')+'</div>'+
     '<div class="row-actions"><button class="icon-btn" data-action="edit-event" data-id="'+e.id+'" title="Edit">'+I.edit+'</button><button class="icon-btn danger" data-action="del-event" data-id="'+e.id+'" title="Delete">'+I.trash+'</button></div></div>';
 }
 function emptyState(t,p,showAdd){return '<div class="empty"><div class="empty-ico">'+I.search+'</div><h3>'+esc(t)+'</h3><p>'+esc(p)+'</p>'+(showAdd?'<div class="row-btns"><button class="btn btn-primary" data-action="add-drive">'+I.plus+' Add drive</button><button class="btn btn-ghost" id="empty-demo">✦ Load sample data</button></div>':'')+'</div>'}
@@ -472,15 +508,15 @@ function renderPick(){
     '<button type="button" class="pchip add" id="pick-add">'+I.plus+'New drive</button>';
 }
 function openEvent(id,presetDrive){
-  ui.editEv=id||null;modalEvent.style.display='block';modalDrive.style.display='none';
+  ui.editEv=id||null;modalEvent.style.display='block';modalDrive.style.display='none';document.getElementById('modal-help').style.display='none';
   document.getElementById('clients').innerHTML=allClients().map(c=>'<option value="'+esc(c)+'">').join('');
   const del=document.getElementById('f-delete'),approx=document.getElementById('f-approx'),dI=document.getElementById('f-date'),dT=document.getElementById('f-datetext');
   if(id){const e=state.events.find(x=>x.id===id);document.getElementById('modal-tag').textContent='EDIT';document.getElementById('modal-title-text').textContent='Edit footage';del.style.display='inline-flex';
-    document.getElementById('f-name').value=e.name||'';document.getElementById('f-client').value=e.client||'';document.getElementById('f-tags').value=(e.tags||[]).join(', ');document.getElementById('f-loc').value=e.location||'';document.getElementById('f-note').value=e.note||'';
+    document.getElementById('f-name').value=e.name||'';document.getElementById('f-client').value=e.client||'';document.getElementById('f-tags').value=(e.tags||[]).join(', ');document.getElementById('f-loc').value=e.location||'';document.getElementById('f-note').value=e.note||'';document.getElementById('f-stage').value=e.stage||'';
     ui.pick=[...e.driveIds];approx.checked=!!e.approx;
     if(e.approx){dI.style.display='none';dT.style.display='block';dT.value=e.dateDisplay||''}else{dI.style.display='block';dT.style.display='none';dI.value=e.date||'';dT.value=''}
   }else{document.getElementById('modal-tag').textContent='NEW';document.getElementById('modal-title-text').textContent='Add footage';del.style.display='none';
-    ['f-name','f-client','f-tags','f-loc','f-note'].forEach(x=>document.getElementById(x).value='');
+    ['f-name','f-client','f-tags','f-loc','f-note','f-stage'].forEach(x=>document.getElementById(x).value='');
     approx.checked=false;dI.style.display='block';dT.style.display='none';dI.value='';dT.value='';
     ui.pick=presetDrive?[presetDrive]:[];
   }
@@ -497,7 +533,7 @@ function saveEvent(){
   const approx=document.getElementById('f-approx').checked;
   const data={name,driveIds:[...ui.pick],client:document.getElementById('f-client').value.trim(),
     tags:document.getElementById('f-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-    location:document.getElementById('f-loc').value.trim(),note:document.getElementById('f-note').value.trim(),approx,
+    location:document.getElementById('f-loc').value.trim(),note:document.getElementById('f-note').value.trim(),stage:document.getElementById('f-stage').value,approx,
     date:approx?null:(document.getElementById('f-date').value||null),dateDisplay:approx?(document.getElementById('f-datetext').value.trim()||null):null};
   if(ui.editEv){Object.assign(state.events.find(e=>e.id===ui.editEv),data)}else{state.events.push(Object.assign({id:uid(),createdAt:Date.now()},data))}
   save();closeModal();render();toast(ui.editEv?'Saved':'Added');
@@ -510,7 +546,7 @@ document.getElementById('f-delete').addEventListener('click',()=>delEvent(ui.edi
 /* ===== drive modal ===== */
 function nextLabel(){const ns=state.drives.map(d=>parseInt(d.label,10)).filter(n=>!isNaN(n));return String(ns.length?Math.max(...ns)+1:1)}
 function openDrive(id){
-  ui.editDrv=id||null;modalDrive.style.display='block';modalEvent.style.display='none';
+  ui.editDrv=id||null;modalDrive.style.display='block';modalEvent.style.display='none';document.getElementById('modal-help').style.display='none';
   const del=document.getElementById('d-delete');
   if(id){const d=driveById(id);document.getElementById('dmodal-tag').textContent='EDIT';document.getElementById('dmodal-title').textContent='Edit drive';del.style.display='inline-flex';
     document.getElementById('d-kind').value=d.kind||'hdd';document.getElementById('d-label').value=d.label||'';document.getElementById('d-name').value=d.name||'';document.getElementById('d-status').value=d.status||'active';document.getElementById('d-note').value=d.note||'';
@@ -545,10 +581,12 @@ document.addEventListener('click',e=>{
     else if(a==='add-to-drive'){openEvent(null,t.dataset.id)}
     else if(a==='add-drive'){openDrive(null)}
     else if(a==='edit-drive'){openDrive(t.dataset.id)}
+    else if(a==='print-drive'){const d=driveById(t.dataset.id);if(d)printDrive(d)}
     else if(a==='tag'){ui.q='';searchInput.value=t.dataset.tag;searchBox.classList.add('has-text');ui.q=t.dataset.tag;render()}
     return;
   }
   if(e.target.id==='empty-demo'){loadDemo()}
+  if(e.target.closest('#quick-add')){const q=ui.q.trim();openEvent(null);document.getElementById('f-name').value=q}
 });
 overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal()});
 document.getElementById('view-seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ui.view=b.dataset.view;ui.sel=null;[...e.currentTarget.children].forEach(c=>c.classList.toggle('active',c===b));render()});
@@ -582,6 +620,42 @@ function loadDemo(){
   ];
   save();ui.sel=null;ui.view='drives';render();toast('Sample data loaded')
 }
+
+/* ===== extras: CSV, print, theme, help, clear, shortcuts ===== */
+function exportCSV(){
+  const Q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const head=['Shoot','Date','Drives','Backed up','Client','Stage','Tags','Location','Note'];
+  const lines=state.events.slice().sort(cmp).map(e=>{
+    const dr=e.driveIds.map(id=>{const d=driveById(id);return d?((d.label?'#'+d.label:'')+(d.name?' '+d.name:(d.label?'':kindLabel(d.kind)))).trim():''}).filter(Boolean).join(' | ');
+    return [e.name,fmtDate(e)||'',dr,isBacked(e)?'yes':'no',e.client,e.stage,(e.tags||[]).join(' '),e.location,e.note].map(Q).join(',');
+  });
+  const csv='﻿'+[head.map(Q).join(',')].concat(lines).join('\r\n');
+  const b=new Blob([csv],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u;a.download='diskcat-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(u);toast('CSV exported');
+}
+document.getElementById('btn-csv').addEventListener('click',exportCSV);
+function printDrive(d){
+  const evs=eventsOnDrive(d.id).slice().sort(cmp);
+  const rows=evs.map(e=>'<tr><td>'+esc(fmtDate(e)||'—')+'</td><td>'+esc(e.name)+'</td><td>'+esc(e.client||'')+'</td><td>'+esc((e.tags||[]).join(', '))+'</td></tr>').join('');
+  const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print');return}
+  w.document.write('<html><head><meta charset="utf-8"><title>'+esc(driveTitle(d))+'</title><style>body{font:14px -apple-system,Arial,sans-serif;padding:26px;color:#111}h1{font-size:20px;margin:0 0 2px}.s{color:#666;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:14px}td,th{border-bottom:1px solid #ddd;padding:8px 6px;text-align:left;font-size:13px;vertical-align:top}th{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#666}</style></head><body><h1>'+esc(driveTitle(d))+'</h1><div class="s">'+evs.length+' shoots · printed from DiskCat</div><table><tr><th>Date</th><th>Shoot</th><th>Client</th><th>Tags</th></tr>'+rows+'</table></body></html>');
+  w.document.close();w.focus();setTimeout(function(){try{w.print()}catch(e){}},300);
+}
+function clearAll(){if(!state.drives.length&&!state.events.length){toast('Already empty');return}if(!confirm('Delete ALL drives and shoots from this browser? This cannot be undone — export a backup first if unsure.'))return;state={drives:[],events:[]};save();ui.sel=null;render();toast('Everything cleared')}
+document.getElementById('btn-clear').addEventListener('click',clearAll);
+function openHelp(){modalEvent.style.display='none';modalDrive.style.display='none';document.getElementById('modal-help').style.display='block';overlay.classList.add('open')}
+document.getElementById('btn-help').addEventListener('click',openHelp);
+document.getElementById('help-close').addEventListener('click',closeModal);
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t)}
+let theme=localStorage.getItem('diskcat.theme')||'dark';applyTheme(theme);
+document.getElementById('btn-theme').addEventListener('click',function(){theme=theme==='light'?'dark':'light';localStorage.setItem('diskcat.theme',theme);applyTheme(theme)});
+document.getElementById('stage-filter').addEventListener('change',function(e){ui.stage=e.target.value;render()});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){if(overlay.classList.contains('open'))closeModal();else if(ui.q){ui.q='';searchInput.value='';searchBox.classList.remove('has-text');render()}return}
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName))return;
+  if(e.key==='/'){e.preventDefault();searchInput.focus()}
+  else if(e.key==='n'||e.key==='N'){e.preventDefault();openEvent(null,ui.sel)}
+});
 
 /* ===== toast + init ===== */
 let tT;function toast(m){const t=document.getElementById('toast');document.getElementById('toast-text').textContent=m;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2200)}

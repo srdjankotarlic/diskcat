@@ -1,5 +1,5 @@
 /* DiskCat service worker — offline app shell */
-const CACHE = 'diskcat-v1';
+const CACHE = 'diskcat-v2';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
@@ -11,12 +11,13 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const u = new URL(e.request.url);
-  if (u.origin !== location.origin) return; // let fonts/CDN go to network
+  if (u.origin !== location.origin) return; // fonts/CDN -> network
+  // network-first: always fresh when online, cached copy when offline
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
+    fetch(e.request).then(resp => {
       const cp = resp.clone();
       caches.open(CACHE).then(c => c.put(e.request, cp));
       return resp;
-    }).catch(() => caches.match('./index.html')))
+    }).catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
   );
 });
