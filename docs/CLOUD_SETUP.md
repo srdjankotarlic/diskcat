@@ -11,6 +11,7 @@ Each team that wants sync creates its own Supabase project. That team owns the d
 - Public read-only link without an account.
 - Editor/viewer invite links for people who should sign in.
 - Project/root folder filters stay synced, so teams can see every drive and shoot related to the same job folder.
+- Optional folder inventory records stay synced too. DiskCat stores searchable names, paths, file types, and attached drive/project metadata, not the actual media files.
 - Local export/import still works as a backup.
 
 Cloud mode is designed for small production teams. It syncs the whole archive after edits, so the newest save wins if two editors change the same archive at the same time.
@@ -49,7 +50,7 @@ Viewer:
 
 Editor:
 
-- Can add/edit/delete drives and footage.
+- Can add/edit/delete drives, footage, and folder inventory.
 - Cannot create invite links unless made owner in the database.
 
 ## Install On Mac

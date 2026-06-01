@@ -68,6 +68,21 @@ create table if not exists public.events (
   primary key (archive_id, id)
 );
 
+create table if not exists public.inventory_items (
+  archive_id uuid not null references public.archives(id) on delete cascade,
+  id text not null,
+  drive_id text not null default '',
+  project_root text not null default '',
+  path text not null default '',
+  name text not null default '',
+  ext text not null default '',
+  kind text not null default 'file' check (kind in ('file', 'folder')),
+  size bigint,
+  created_at bigint,
+  updated_at timestamptz not null default now(),
+  primary key (archive_id, id)
+);
+
 alter table public.events
 add column if not exists project_root text not null default '';
 
@@ -76,6 +91,8 @@ create index if not exists archive_invites_code_idx on public.archive_invites (c
 create index if not exists drives_archive_updated_idx on public.drives (archive_id, updated_at desc);
 create index if not exists events_archive_updated_idx on public.events (archive_id, updated_at desc);
 create index if not exists events_archive_date_idx on public.events (archive_id, event_date desc);
+create index if not exists inventory_archive_project_idx on public.inventory_items (archive_id, project_root);
+create index if not exists inventory_archive_path_idx on public.inventory_items (archive_id, path);
 
 create or replace function public.diskcat_touch_updated_at()
 returns trigger
@@ -100,6 +117,11 @@ for each row execute function public.diskcat_touch_updated_at();
 drop trigger if exists events_touch_updated_at on public.events;
 create trigger events_touch_updated_at
 before update on public.events
+for each row execute function public.diskcat_touch_updated_at();
+
+drop trigger if exists inventory_items_touch_updated_at on public.inventory_items;
+create trigger inventory_items_touch_updated_at
+before update on public.inventory_items
 for each row execute function public.diskcat_touch_updated_at();
 
 create or replace function public.diskcat_member_role(p_archive_id uuid)
@@ -289,6 +311,11 @@ as $$
       select jsonb_agg(to_jsonb(e) - 'archive_id' - 'updated_at' order by e.event_date desc nulls last, e.name)
       from public.events e
       where e.archive_id = a.id
+    ), '[]'::jsonb),
+    'inventory', coalesce((
+      select jsonb_agg(to_jsonb(i) - 'archive_id' - 'updated_at' order by i.project_root, i.path)
+      from public.inventory_items i
+      where i.archive_id = a.id
     ), '[]'::jsonb)
   )
   from public.archives a
@@ -302,6 +329,7 @@ alter table public.archive_members enable row level security;
 alter table public.archive_invites enable row level security;
 alter table public.drives enable row level security;
 alter table public.events enable row level security;
+alter table public.inventory_items enable row level security;
 
 drop policy if exists "archives_select_members" on public.archives;
 create policy "archives_select_members"
@@ -481,11 +509,52 @@ using (
   and public.diskcat_can_write_archive(archive_id)
 );
 
+drop policy if exists "inventory_select_members" on public.inventory_items;
+create policy "inventory_select_members"
+on public.inventory_items for select
+to authenticated
+using (
+  (select auth.uid()) is not null
+  and public.diskcat_can_read_archive(archive_id)
+);
+
+drop policy if exists "inventory_insert_writers" on public.inventory_items;
+create policy "inventory_insert_writers"
+on public.inventory_items for insert
+to authenticated
+with check (
+  (select auth.uid()) is not null
+  and public.diskcat_can_write_archive(archive_id)
+);
+
+drop policy if exists "inventory_update_writers" on public.inventory_items;
+create policy "inventory_update_writers"
+on public.inventory_items for update
+to authenticated
+using (
+  (select auth.uid()) is not null
+  and public.diskcat_can_write_archive(archive_id)
+)
+with check (
+  (select auth.uid()) is not null
+  and public.diskcat_can_write_archive(archive_id)
+);
+
+drop policy if exists "inventory_delete_writers" on public.inventory_items;
+create policy "inventory_delete_writers"
+on public.inventory_items for delete
+to authenticated
+using (
+  (select auth.uid()) is not null
+  and public.diskcat_can_write_archive(archive_id)
+);
+
 revoke all on public.archives from anon;
 revoke all on public.archive_members from anon;
 revoke all on public.archive_invites from anon;
 revoke all on public.drives from anon;
 revoke all on public.events from anon;
+revoke all on public.inventory_items from anon;
 
 grant usage on schema public to anon, authenticated;
 grant select, insert, update, delete on public.archives to authenticated;
@@ -493,6 +562,7 @@ grant select, insert, update, delete on public.archive_members to authenticated;
 grant select, delete on public.archive_invites to authenticated;
 grant select, insert, update, delete on public.drives to authenticated;
 grant select, insert, update, delete on public.events to authenticated;
+grant select, insert, update, delete on public.inventory_items to authenticated;
 
 revoke all on function public.diskcat_member_role(uuid) from public;
 revoke all on function public.diskcat_can_read_archive(uuid) from public;
