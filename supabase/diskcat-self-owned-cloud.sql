@@ -10,6 +10,7 @@ create table if not exists public.archives (
   name text not null default 'My DiskCat Archive',
   public_read_enabled boolean not null default false,
   public_read_token text unique,
+  sync_version bigint not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -44,6 +45,8 @@ create table if not exists public.drives (
   used numeric,
   cap_unit text not null default 'TB',
   note text not null default '',
+  last_verified date,
+  last_scanned date,
   created_at bigint,
   updated_at timestamptz not null default now(),
   primary key (archive_id, id)
@@ -78,13 +81,28 @@ create table if not exists public.inventory_items (
   ext text not null default '',
   kind text not null default 'file' check (kind in ('file', 'folder')),
   size bigint,
+  duration text not null default '',
+  resolution text not null default '',
+  codec text not null default '',
   created_at bigint,
   updated_at timestamptz not null default now(),
   primary key (archive_id, id)
 );
 
+alter table public.archives
+add column if not exists sync_version bigint not null default 0;
+
+alter table public.drives
+add column if not exists last_verified date,
+add column if not exists last_scanned date;
+
 alter table public.events
 add column if not exists project_root text not null default '';
+
+alter table public.inventory_items
+add column if not exists duration text not null default '',
+add column if not exists resolution text not null default '',
+add column if not exists codec text not null default '';
 
 create index if not exists archive_members_user_idx on public.archive_members (user_id, archive_id);
 create index if not exists archive_invites_code_idx on public.archive_invites (code);
@@ -289,6 +307,33 @@ begin
 end;
 $$;
 
+create or replace function public.diskcat_touch_archive(p_archive_id uuid)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_version bigint;
+begin
+  if (select auth.uid()) is null then
+    raise exception 'Sign in first';
+  end if;
+
+  if not public.diskcat_can_write_archive(p_archive_id) then
+    raise exception 'Only archive editors can sync changes';
+  end if;
+
+  update public.archives
+  set sync_version = sync_version + 1,
+      updated_at = now()
+  where id = p_archive_id
+  returning sync_version into v_version;
+
+  return jsonb_build_object('archive_id', p_archive_id, 'sync_version', v_version);
+end;
+$$;
+
 create or replace function public.diskcat_public_read_archive(p_token text)
 returns jsonb
 language sql
@@ -300,7 +345,8 @@ as $$
     'archive', jsonb_build_object(
       'id', a.id,
       'name', a.name,
-      'public_read_enabled', a.public_read_enabled
+      'public_read_enabled', a.public_read_enabled,
+      'sync_version', a.sync_version
     ),
     'drives', coalesce((
       select jsonb_agg(to_jsonb(d) - 'archive_id' - 'updated_at' order by d.label, d.name)
@@ -571,6 +617,7 @@ revoke all on function public.diskcat_is_owner(uuid) from public;
 revoke all on function public.diskcat_public_read_archive(text) from public;
 revoke all on function public.diskcat_create_invite(uuid, text) from public;
 revoke all on function public.diskcat_redeem_invite(text) from public;
+revoke all on function public.diskcat_touch_archive(uuid) from public;
 
 grant execute on function public.diskcat_member_role(uuid) to authenticated;
 grant execute on function public.diskcat_can_read_archive(uuid) to authenticated;
@@ -579,3 +626,4 @@ grant execute on function public.diskcat_is_owner(uuid) to authenticated;
 grant execute on function public.diskcat_public_read_archive(text) to anon, authenticated;
 grant execute on function public.diskcat_create_invite(uuid, text) to authenticated;
 grant execute on function public.diskcat_redeem_invite(text) to authenticated;
+grant execute on function public.diskcat_touch_archive(uuid) to authenticated;

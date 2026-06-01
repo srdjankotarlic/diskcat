@@ -96,6 +96,17 @@
   .inventory-name{font-size:13.5px;font-weight:700;color:var(--text);word-break:break-word}
   .inventory-path{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-3);line-height:1.45;margin-top:4px;word-break:break-all}
   .file-pill{font-size:10.5px;font-weight:800;color:var(--text-2);background:var(--surface-3);border:1px solid var(--border);border-radius:7px;padding:3px 7px;text-transform:uppercase}
+  .health-pill{font-size:10.5px;font-weight:800;border-radius:7px;padding:4px 8px;border:1px solid var(--border);background:var(--surface-3);color:var(--text-2);text-transform:uppercase;white-space:nowrap}
+  .health-pill.ok{color:var(--ok);background:rgba(61,220,151,.12);border-color:rgba(61,220,151,.28)}
+  .health-pill.warn{color:var(--amber);background:rgba(255,180,84,.12);border-color:rgba(255,180,84,.28)}
+  .setup-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 6px}
+  .setup-step{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:132px}
+  .setup-step b{font-size:14px;color:var(--text)}.setup-step span{font-size:12px;color:var(--text-3);line-height:1.45}.setup-step button{margin-top:auto;justify-content:center}
+  .report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .report-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;min-width:0}
+  .report-card h4{font-size:13px;color:var(--text);margin:0 0 8px}.report-card p{font-size:12px;color:var(--text-3);line-height:1.5}
+  .report-list{display:flex;flex-direction:column;gap:7px;margin-top:10px;max-height:210px;overflow:auto}
+  .report-item{font-size:12px;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:8px 9px;display:flex;gap:8px;align-items:center;justify-content:space-between;word-break:break-word}
 
   .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px;min-height:38px}
   .seg{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:3px}
@@ -221,7 +232,7 @@
     #btn-new{display:none}.brand-name{font-size:16px}
     .row-date{width:auto;min-width:74px}.detail-head .btn{flex:1;justify-content:center}.detail-head .btn:nth-last-of-type(2){margin-left:0}
     .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.disk-num{font-size:40px}
-    .foot{padding-bottom:74px}.onboard{grid-template-columns:1fr}.cloud-meta{grid-template-columns:1fr}.project-panel{align-items:flex-start;flex-direction:column}.project-stats{justify-content:flex-start}.inventory-stats{grid-template-columns:1fr}
+    .foot{padding-bottom:74px}.onboard{grid-template-columns:1fr}.cloud-meta{grid-template-columns:1fr}.project-panel{align-items:flex-start;flex-direction:column}.project-stats{justify-content:flex-start}.inventory-stats{grid-template-columns:1fr}.setup-steps,.report-grid{grid-template-columns:1fr}
   }
   @media (hover:none),(pointer:coarse){.row-actions{opacity:1}}
   @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.05ms!important}}
@@ -272,6 +283,7 @@
     <div class="top-right">
       <button class="icon-top" id="btn-cloud" title="Cloud sync" aria-label="Open cloud sync"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><path d="M12 13v6"/><path d="m9 16 3 3 3-3"/></svg></button>
       <button class="icon-top" id="btn-inventory" title="Folder inventory" aria-label="Open folder inventory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v2"/><path d="M3 7v10a2 2 0 0 0 2 2h7"/><circle cx="17" cy="17" r="3"/><path d="m21 21-1.9-1.9"/></svg></button>
+      <button class="icon-top" id="btn-reports" title="Reports" aria-label="Open reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="5" rx="1"/><rect x="12" y="8" width="3" height="9" rx="1"/><rect x="17" y="5" width="3" height="12" rx="1"/></svg></button>
       <button class="icon-top" id="btn-share" title="Share this archive (link)" aria-label="Share this archive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
       <button class="icon-top" id="btn-theme" title="Light / dark theme" aria-label="Toggle light or dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg></button>
       <button class="icon-top" id="btn-help" title="How it works" aria-label="Open help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
@@ -375,6 +387,10 @@
       <div class="field"><label>Total space <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="number" id="d-cap" min="0" step="0.1" placeholder="e.g. 2"></div>
       <div class="field"><label>Used</label><input type="number" id="d-used" min="0" step="0.1" placeholder="e.g. 1.2"></div>
       <div class="field" style="max-width:100px"><label>Unit</label><select id="d-capunit"><option value="TB">TB</option><option value="GB">GB</option></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Last verified <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="date" id="d-verified"></div>
+      <div class="field"><label>Last scanned <span style="color:var(--text-3);font-weight:400">(optional)</span></label><input type="date" id="d-scanned"></div>
     </div>
     <div class="hint">Fill space to see a fill bar and free-space overview.</div>
     <div class="modal-actions">
@@ -484,6 +500,23 @@
     <div class="modal-actions"><div class="grow"></div><button class="btn btn-ghost" id="share-close">Close</button><button class="btn btn-primary" id="share-copy">Copy link</button></div>
   </div>
 
+  <div class="modal" id="modal-setup" style="display:none" role="dialog" aria-modal="true" aria-labelledby="setup-title">
+    <h3 id="setup-title"><span class="mtag">START</span> Set up DiskCat</h3>
+    <div class="inventory-hint"><p><b>Three steps.</b> Add a drive, optionally index its folder contents, then log the first shoot. You can skip any step and continue later.</p></div>
+    <div class="setup-steps">
+      <div class="setup-step"><b>1. Add drive</b><span>Name the physical drive, card, NAS, cloud bucket, or laptop where footage lives.</span><button class="btn btn-primary" data-action="setup-drive">Add drive</button></div>
+      <div class="setup-step"><b>2. Import inventory</b><span>Scan or paste a folder list so filenames and exports become searchable.</span><button class="btn btn-ghost" data-action="setup-inventory">Folder inventory</button></div>
+      <div class="setup-step"><b>3. Add shoot</b><span>Log the project, date, client, tags, and every drive that has a copy.</span><button class="btn btn-ghost" data-action="setup-shoot">Add shoot</button></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" id="setup-never">Do not show again</button><div class="grow"></div><button class="btn btn-primary" id="setup-close">Close</button></div>
+  </div>
+
+  <div class="modal" id="modal-reports" style="display:none" role="dialog" aria-modal="true" aria-labelledby="reports-title">
+    <h3 id="reports-title"><span class="mtag">PRO</span> Reports</h3>
+    <div id="reports-body"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" id="reports-csv">Export report CSV</button><div class="grow"></div><button class="btn btn-primary" id="reports-close">Close</button></div>
+  </div>
+
   <div class="modal" id="modal-inventory" style="display:none" role="dialog" aria-modal="true" aria-labelledby="inventory-title">
     <h3 id="inventory-title"><span class="mtag">LOCAL</span> Folder inventory</h3>
     <div class="inventory-hint"><p><b>Local only.</b> Scan a folder locally in Chrome/Edge, or paste/import a file list. DiskCat stores names and paths so search can find files, folders, project numbers, and file types later.</p></div>
@@ -498,7 +531,7 @@
       <button class="btn btn-ghost" id="inv-clear">Clear inventory</button>
       <input type="file" id="inv-file" accept=".txt,.csv,.tsv,.json" style="display:none">
     </div>
-    <div class="field"><label>Paste file/folder listing</label><textarea id="inv-text" placeholder="Paste paths from find, tree, DiskCatalogMaker export, CSV, or one file per line. Example:&#10;ACME_Conference_2025/Camera_A/A001_C001.mov&#10;ACME_Conference_2025/Audio/day1.wav"></textarea></div>
+    <div class="field"><label>Paste file/folder listing or ffprobe CSV</label><textarea id="inv-text" placeholder="One path per line, or CSV columns: path,duration,resolution,codec&#10;ACME_Conference_2025/Camera_A/A001_C001.mov,00:01:32,3840x2160,ProRes&#10;ACME_Conference_2025/Audio/day1.wav"></textarea><div class="hint">Optional metadata works with ffprobe exports: duration, resolution, codec.</div></div>
     <div class="modal-actions"><button class="btn btn-ghost" id="inv-import">Import pasted list</button><div class="grow"></div><button class="btn btn-primary" id="inv-close">Close</button></div>
   </div>
 </div>
@@ -533,10 +566,11 @@ function kindLabel(k){return KINDS[k]||'Drive'}
 /* ===== state ===== */
 const KEY='diskcat.v1';
 const CLOUD_KEY='diskcat.cloud.v1';
+const SETUP_KEY='diskcat.setup.dismissed.v1';
 const CLOUD_SQL_PATH='supabase/diskcat-self-owned-cloud.sql';
 let state={drives:[],events:[],inventory:[]};
 let ui={view:'drives',q:'',sort:'date_desc',year:'all',project:'all',client:'all',onlyNoBackup:false,stage:'all',sel:null,editEv:null,editDrv:null,pick:[]};
-let cloud={client:null,clientUrl:'',clientKey:'',url:'',key:'',user:null,archiveId:'',archiveName:'',role:'local',readOnly:false,publicToken:'',pendingInvite:null,syncTimer:null,reloadTimer:null,loading:false,syncing:false,lastSync:null,shareLink:'',authSub:null,channel:null};
+let cloud={client:null,clientUrl:'',clientKey:'',url:'',key:'',user:null,archiveId:'',archiveName:'',role:'local',readOnly:false,publicToken:'',pendingInvite:null,syncTimer:null,reloadTimer:null,loading:false,syncing:false,lastSync:null,lastSyncVersion:null,shareLink:'',authSub:null,channel:null};
 function uid(){return 'x'+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3)}
 function cloudCanWrite(){return !cloud.readOnly&&(!cloud.archiveId||cloud.role==='owner'||cloud.role==='editor')}
 function guardWrite(){if(cloudCanWrite())return true;toast('Read-only: you can view, not edit');return false}
@@ -546,9 +580,9 @@ function migrate(){
   if(!Array.isArray(state.drives))state.drives=[];
   if(!Array.isArray(state.events))state.events=[];
   if(!Array.isArray(state.inventory))state.inventory=[];
-  (state.drives||[]).forEach(d=>{if(!d.kind)d.kind='hdd';['label','name','note'].forEach(k=>{if(d[k]==null)d[k]=''});if(!d.status)d.status='active';if(d.capacity===undefined)d.capacity=null;if(d.used===undefined)d.used=null;if(!d.capUnit)d.capUnit='TB'});
+  (state.drives||[]).forEach(d=>{if(!d.kind)d.kind='hdd';['label','name','note','lastVerified','lastScanned'].forEach(k=>{if(d[k]==null)d[k]=''});if(!d.status)d.status='active';if(d.capacity===undefined)d.capacity=null;if(d.used===undefined)d.used=null;if(!d.capUnit)d.capUnit='TB'});
   (state.events||[]).forEach(e=>{if(!Array.isArray(e.driveIds))e.driveIds=e.driveId?[e.driveId]:[];if(!Array.isArray(e.tags))e.tags=[];['name','client','projectRoot','location','note'].forEach(k=>{if(e[k]==null)e[k]=''});if(e.stage==null)e.stage=''});
-  (state.inventory||[]).forEach(it=>{['id','driveId','projectRoot','path','name','ext','kind'].forEach(k=>{if(it[k]==null)it[k]=''});if(!it.id)it.id=uid();if(!it.kind)it.kind='file';if(it.size===undefined)it.size=null;if(!it.createdAt)it.createdAt=Date.now()});
+  (state.inventory||[]).forEach(it=>{['id','driveId','projectRoot','path','name','ext','kind','duration','resolution','codec'].forEach(k=>{if(it[k]==null)it[k]=''});if(!it.id)it.id=uid();if(!it.kind)it.kind='file';if(it.size===undefined)it.size=null;if(!it.createdAt)it.createdAt=Date.now()});
 }
 
 /* ===== helpers ===== */
@@ -563,13 +597,17 @@ function formatBytes(n){const u=['B','KB','MB','GB','TB'];let v=Number(n)||0,i=0
 function capInfo(d){const c=d.capacity;if(c==null||!(c>0))return null;let u=(d.used!=null&&d.used>=0)?d.used:0;return{pct:Math.max(0,Math.min(100,Math.round(u/c*100))),used:u,total:c,free:Math.max(0,Math.round((c-u)*100)/100),unit:d.capUnit||'TB'}}
 function getYear(e){if(e.date)return e.date.slice(0,4);if(e.dateDisplay){const m=e.dateDisplay.match(/(19|20)\d\d/);if(m)return m[0]}return null}
 function fmtDate(e){if(e.dateDisplay)return e.dateDisplay;if(e.date){const[y,m,d]=e.date.split('-');return d+'.'+m+'.'+y+'.'}return null}
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function daysSince(date){if(!date)return Infinity;const t=new Date(date+'T00:00:00').getTime();return isNaN(t)?Infinity:Math.floor((Date.now()-t)/86400000)}
+function driveVerifyState(d){const days=daysSince(d.lastVerified);if(days===Infinity)return{label:'Not verified',cls:'warn',days};if(days>90)return{label:'Verify soon',cls:'warn',days};return{label:'Verified',cls:'ok',days}}
+function driveVerifyText(d){const s=driveVerifyState(d);return s.days===Infinity?s.label:(s.label+' '+s.days+'d ago')}
 function allYears(){const s=new Set();state.events.forEach(e=>{const y=getYear(e);if(y)s.add(y)});return[...s].sort((a,b)=>b.localeCompare(a))}
 function allClients(){const s=new Set();state.events.forEach(e=>{if(e.client)s.add(e.client)});return[...s].sort((a,b)=>a.localeCompare(b))}
 function allProjects(){const s=new Set();state.events.forEach(e=>{if(e.projectRoot)s.add(e.projectRoot)});state.inventory.forEach(it=>{if(it.projectRoot)s.add(it.projectRoot)});return[...s].sort((a,b)=>a.localeCompare(b))}
 function cmp(a,b){if(ui.sort==='name')return a.name.localeCompare(b.name);const ad=a.date||'',bd=b.date||'';if(!ad&&!bd)return a.name.localeCompare(b.name);if(!ad)return 1;if(!bd)return -1;return ui.sort==='date_asc'?ad.localeCompare(bd):bd.localeCompare(ad)}
 function matchQ(e){const q=ui.q.trim().toLowerCase();if(!q)return true;const dn=e.driveIds.map(id=>{const d=driveById(id);return d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''}).join(' ');const hay=[e.name,e.projectRoot,e.client,e.tags.join(' '),e.location,e.note,e.stage||'',fmtDate(e)||'',getYear(e)||'',dn].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
 function passFilters(e){if(ui.year!=='all'&&getYear(e)!==ui.year)return false;if(ui.project!=='all'&&e.projectRoot!==ui.project)return false;if(ui.client!=='all'&&e.client!==ui.client)return false;if(ui.onlyNoBackup&&isBacked(e))return false;if(ui.stage!=='all'&&(e.stage||'')!==ui.stage)return false;return true}
-function matchInventoryQ(it){const q=ui.q.trim().toLowerCase();if(!q)return false;const d=driveById(it.driveId);const hay=[it.name,it.path,it.ext,it.kind,it.projectRoot,d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
+function matchInventoryQ(it){const q=ui.q.trim().toLowerCase();if(!q)return false;const d=driveById(it.driveId);const hay=[it.name,it.path,it.ext,it.kind,it.projectRoot,it.duration,it.resolution,it.codec,d?(d.label+' '+d.name+' '+kindLabel(d.kind)):''].join(' ').toLowerCase();return q.split(/\s+/).every(t=>hay.includes(t))}
 function passInventoryFilters(it){if(ui.project!=='all'&&it.projectRoot!==ui.project)return false;return true}
 function hasContentFilters(){return ui.year!=='all'||ui.project!=='all'||ui.client!=='all'||ui.onlyNoBackup||ui.stage!=='all'}
 function visibleEventsOnDrive(id){const evs=eventsOnDrive(id);return hasContentFilters()?evs.filter(passFilters):evs}
@@ -626,6 +664,7 @@ function driveCard(d,i,evsOverride){
   const dated=evs.filter(e=>e.date).map(e=>e.date.slice(0,4));
   let range='';if(dated.length){const mn=Math.min(...dated.map(Number)),mx=Math.max(...dated.map(Number));range=mn===mx?''+mn:mn+'–'+mx}else if(evs.length)range='no dates';
   const ci=capInfo(d);
+  const vh=driveVerifyState(d);
   const names=evs.slice().sort(cmp).map(e=>esc(e.name));
   const evList=names.length?'<div class="disk-events">'+names.join(' · ')+'</div>':'';
   const hasNum=d.label&&d.label.length<=4;
@@ -637,7 +676,7 @@ function driveCard(d,i,evsOverride){
   }else{const mx=Math.max(1,...state.drives.map(x=>eventsOnDrive(x.id).length));cap='<div class="disk-bar"><i class="ghost" style="width:'+Math.round(evs.length/mx*100)+'%"></i></div>'}
   return '<div class="disk" data-action="open-drive" data-id="'+d.id+'" style="animation-delay:'+(i*22)+'ms">'+
     '<div class="disk-glyph">'+kindIcon(d.kind)+'</div>'+
-    '<div class="disk-top"><span class="disk-tag">'+esc(kindLabel(d.kind).toUpperCase())+'</span><div class="disk-badges"><span class="dot '+d.status+'"></span></div></div>'+
+    '<div class="disk-top"><span class="disk-tag">'+esc(kindLabel(d.kind).toUpperCase())+'</span><div class="disk-badges"><span class="health-pill '+vh.cls+'">'+esc(vh.days===Infinity?'verify':(vh.days+'d'))+'</span><span class="dot '+d.status+'"></span></div></div>'+
     hero+nameLine+evList+
     '<div class="disk-foot"><div class="disk-count">'+evs.length+' <span>'+(evs.length===1?'shoot':'shoots')+'</span></div><div class="disk-free" style="margin-top:3px">'+(range||'empty')+(d.note?' · '+esc(d.note):'')+'</div>'+cap+'</div></div>';
 }
@@ -658,7 +697,8 @@ function inventoryRow(it){
   const drive=d?'<button class="drv-badge" data-action="open-drive" data-id="'+d.id+'">'+(d.label?('#'+esc(d.label)):esc(kindLabel(d.kind)))+(d.name?' '+esc(d.name):'')+'</button>':'';
   const project=it.projectRoot?'<span class="project-chip" data-action="project" data-project="'+esc(it.projectRoot)+'">'+esc(it.projectRoot)+'</span>':'';
   const type=it.kind==='folder'?'folder':(it.ext||'file');
-  const meta='<div class="row-meta">'+drive+project+'<span class="file-pill">'+esc(type)+'</span>'+(it.size?'<span class="meta-chip">'+esc(formatBytes(it.size))+'</span>':'')+'</div>';
+  const media=[it.duration,it.resolution,it.codec].filter(Boolean).map(x=>'<span class="meta-chip">'+esc(x)+'</span>').join('');
+  const meta='<div class="row-meta">'+drive+project+'<span class="file-pill">'+esc(type)+'</span>'+(it.size?'<span class="meta-chip">'+esc(formatBytes(it.size))+'</span>':'')+media+'</div>';
   return '<div class="inventory-row"><div class="inventory-ico">'+(it.kind==='folder'?I.folder:I.file)+'</div><div class="row-main"><div class="inventory-name">'+esc(it.name||it.path||'Untitled')+'</div>'+meta+'<div class="inventory-path">'+esc(it.path||'')+'</div></div></div>';
 }
 function renderInventoryMatches(items){
@@ -681,10 +721,12 @@ function renderDriveDetail(id){
   const st={active:'Active',full:'Full',archived:'Archived'}[d.status]||'';
   const ci=capInfo(d);
   let sub=kindLabel(d.kind)+' · '+st+' · '+items.length+(items.length===1?' shoot':' shoots')+(d.note?' · '+esc(d.note):'');
+  sub+=' · '+driveVerifyText(d);
   if(ci)sub+=' · '+fmtNum(ci.used)+'/'+fmtNum(ci.total)+' '+ci.unit+' ('+ci.free+' '+ci.unit+' free)';
   let html='<div class="detail-head"><button class="back" data-action="home">'+I.back+' All drives</button>'+
     '<div class="detail-title"><h2>'+(d.label?'Drive <span class="dnum mono">'+esc(d.label)+'</span>':esc(kindLabel(d.kind)))+(d.name?' <span class="detail-sub">'+esc(d.name)+'</span>':'')+'</h2><span class="dot '+d.status+'"></span><span class="detail-sub">'+sub+'</span></div>'+
     '<button class="btn btn-ghost" data-action="print-drive" data-id="'+d.id+'" style="margin-left:auto">🖨 Print</button>'+
+    (cloudCanWrite()?'<button class="btn btn-ghost" data-action="verify-drive" data-id="'+d.id+'">✓ Verified today</button>':'')+
     (cloudCanWrite()?'<button class="btn btn-ghost" data-action="edit-drive" data-id="'+d.id+'">'+I.gear+' Drive</button><button class="btn btn-primary" data-action="add-to-drive" data-id="'+d.id+'">'+I.plus+' Add shoot</button>':'')+'</div>';
   html+=items.length?'<div class="list">'+items.map(e=>eventRow(e,false)).join('')+'</div>':emptyState('No shoots on this drive yet','Click “Add shoot” to log the first one.',cloudCanWrite());
   content.innerHTML=html;
@@ -702,10 +744,46 @@ function eventRow(e,showDrives){
     '<div class="row-main"><div class="row-name">'+esc(e.name)+(e.approx?'<span class="approx">~</span>':'')+' '+bk+' '+stageBadge(e)+'</div>'+(meta?'<div class="row-meta">'+meta+'</div>':'')+'</div>'+
     actions+'</div>';
 }
-function emptyState(t,p,showAdd){return '<div class="empty"><div class="empty-ico">'+I.search+'</div><h3>'+esc(t)+'</h3><p>'+esc(p)+'</p>'+(showAdd?'<div class="onboard"><button data-action="add-drive"><b>Start local</b><span>Add the first drive and keep everything in this browser.</span></button><button data-action="open-cloud"><b>Set up cloud</b><span>Use your own Supabase project for team access.</span></button><button id="empty-demo"><b>Sample data</b><span>Preview a finished archive before entering real data.</span></button></div>':'')+'</div>'}
+function emptyState(t,p,showAdd){return '<div class="empty"><div class="empty-ico">'+I.search+'</div><h3>'+esc(t)+'</h3><p>'+esc(p)+'</p>'+(showAdd?'<div class="onboard"><button data-action="setup"><b>Guided setup</b><span>Add drive, import inventory, then log the first shoot.</span></button><button data-action="add-drive"><b>Start local</b><span>Add the first drive and keep everything in this browser.</span></button><button id="empty-demo"><b>Sample data</b><span>Preview a finished archive before entering real data.</span></button></div>':'')+'</div>'}
+function reportItems(items,empty){
+  return '<div class="report-list">'+(items.length?items.map(x=>'<div class="report-item"><span>'+x+'</span></div>').join(''):'<div class="report-item"><span>'+esc(empty)+'</span></div>')+'</div>';
+}
+function reportProjectMap(){
+  const ps=allProjects();
+  return ps.map(p=>{
+    const evs=state.events.filter(e=>e.projectRoot===p),inv=state.inventory.filter(it=>it.projectRoot===p);
+    const drives=[...new Set(evs.flatMap(e=>e.driveIds).concat(inv.map(it=>it.driveId).filter(Boolean)))].map(id=>driveById(id)).filter(Boolean).sort(driveOrder);
+    return '<div class="report-item"><span>'+esc(p)+'</span><span>'+drives.length+' drives · '+evs.length+' shoots · '+inv.length+' files</span></div>';
+  }).join('')||'<div class="report-item"><span>No project folders yet.</span></div>';
+}
+function renderReports(){
+  const notBacked=state.events.filter(e=>!isBacked(e)).sort(cmp);
+  const noDrive=state.events.filter(e=>!e.driveIds.length).sort(cmp);
+  const stale=state.drives.filter(d=>driveVerifyState(d).cls==='warn').sort(driveOrder);
+  const body=document.getElementById('reports-body');
+  body.innerHTML='<div class="report-grid">'+
+    '<div class="report-card"><h4>Not backed up</h4><p>Shoots with fewer than two drive copies.</p>'+reportItems(notBacked.map(e=>esc(e.name)+' <span class="health-pill warn">'+e.driveIds.length+' copy</span>'),'Everything has at least two copies.')+'</div>'+
+    '<div class="report-card"><h4>Missing drive</h4><p>Entries that need a storage location.</p>'+reportItems(noDrive.map(e=>esc(e.name)),'No missing drive links.')+'</div>'+
+    '<div class="report-card"><h4>Drive verification</h4><p>Drives not verified in the last 90 days.</p>'+reportItems(stale.map(d=>esc(driveTitle(d))+' <span class="health-pill warn">'+esc(driveVerifyText(d))+'</span>'),'All drives are recently verified.')+'</div>'+
+    '<div class="report-card"><h4>Per-project drive map</h4><p>Which projects span which drives and inventory.</p><div class="report-list">'+reportProjectMap()+'</div></div>'+
+  '</div>';
+}
+function openReports(){hideModals();renderReports();modalReports.style.display='block';overlay.classList.add('open')}
+function exportReportCSV(){
+  const Q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"';
+  const rows=[['Report','Item','Detail']];
+  state.events.filter(e=>!isBacked(e)).forEach(e=>rows.push(['Not backed up',e.name,e.driveIds.length+' copy/copies']));
+  state.events.filter(e=>!e.driveIds.length).forEach(e=>rows.push(['Missing drive',e.name,'No drive selected']));
+  state.drives.filter(d=>driveVerifyState(d).cls==='warn').forEach(d=>rows.push(['Drive verification',driveTitle(d),driveVerifyText(d)]));
+  const csv='\ufeff'+rows.map(r=>r.map(Q).join(',')).join('\r\n');
+  const b=new Blob([csv],{type:'text/csv'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='diskcat-report-'+todayISO()+'.csv';a.click();URL.revokeObjectURL(u);toast('Report CSV exported');
+}
+function openSetup(){hideModals();modalSetup.style.display='block';overlay.classList.add('open')}
+function maybeOpenSetup(){try{if(!localStorage.getItem(SETUP_KEY)&&!state.drives.length&&!state.events.length&&!state.inventory.length&&cloudCanWrite())setTimeout(openSetup,450)}catch(e){}}
 
 /* ===== event modal ===== */
-const overlay=document.getElementById('overlay'),modalEvent=document.getElementById('modal-event'),modalDrive=document.getElementById('modal-drive'),modalInventory=document.getElementById('modal-inventory');
+const overlay=document.getElementById('overlay'),modalEvent=document.getElementById('modal-event'),modalDrive=document.getElementById('modal-drive'),modalInventory=document.getElementById('modal-inventory'),modalSetup=document.getElementById('modal-setup'),modalReports=document.getElementById('modal-reports');
+function hideModals(){[modalEvent,modalDrive,modalInventory,modalSetup,modalReports,document.getElementById('modal-help'),document.getElementById('modal-cloud'),document.getElementById('modal-share')].forEach(m=>{if(m)m.style.display='none'})}
 function renderPick(){
   const wrap=document.getElementById('f-drives');
   const ds=[...state.drives].sort(driveOrder);
@@ -715,7 +793,7 @@ function renderPick(){
 function openEvent(id,presetDrive){
   if(!guardWrite())return;
   if(!id&&!presetDrive&&!state.drives.length){openDrive(null);toast('Add a drive first');return}
-  ui.editEv=id||null;modalEvent.style.display='block';modalDrive.style.display='none';modalInventory.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-cloud').style.display='none';document.getElementById('modal-share').style.display='none';
+  ui.editEv=id||null;hideModals();modalEvent.style.display='block';
   document.getElementById('clients').innerHTML=allClients().map(c=>'<option value="'+esc(c)+'">').join('');
   document.getElementById('projects').innerHTML=allProjects().map(p=>'<option value="'+esc(p)+'">').join('');
   const del=document.getElementById('f-delete'),approx=document.getElementById('f-approx'),dI=document.getElementById('f-date'),dT=document.getElementById('f-datetext');
@@ -761,9 +839,10 @@ function inventoryName(path){const p=normalizeInventoryPath(path).replace(/\/$/,
 function inventoryExt(path,kind){if(kind==='folder')return '';const n=inventoryName(path),i=n.lastIndexOf('.');return i>0?n.slice(i+1).toLowerCase():''}
 function inventoryProject(path,fallback){if(fallback)return fallback;const p=normalizeInventoryPath(path).split('/').filter(Boolean);return p.length>1?p[0]:''}
 function inventoryKey(it){return[(it.driveId||''),(it.projectRoot||''),(it.path||'')].join('|').toLowerCase()}
-function makeInventoryItem(path,kind,driveId,projectRoot,size){
+function makeInventoryItem(path,kind,driveId,projectRoot,size,meta){
   const clean=normalizeInventoryPath(path),type=kind==='folder'||/\/$/.test(path)?'folder':'file';
-  return{id:uid(),driveId:driveId||'',projectRoot:inventoryProject(clean,projectRoot),path:clean,name:inventoryName(clean),ext:inventoryExt(clean,type),kind:type,size:Number.isFinite(size)?size:null,createdAt:Date.now()}
+  meta=meta||{};
+  return{id:uid(),driveId:driveId||'',projectRoot:inventoryProject(clean,projectRoot),path:clean,name:inventoryName(clean),ext:inventoryExt(clean,type),kind:type,size:Number.isFinite(size)?size:null,duration:meta.duration||'',resolution:meta.resolution||'',codec:meta.codec||'',createdAt:Date.now()}
 }
 function inventoryStats(){
   const files=state.inventory.filter(it=>it.kind!=='folder').length,folders=state.inventory.length-files;
@@ -779,7 +858,7 @@ function renderInventoryStats(){
   document.getElementById('projects').innerHTML=allProjects().map(p=>'<option value="'+esc(p)+'">').join('');
 }
 function openInventory(){
-  modalEvent.style.display='none';modalDrive.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-cloud').style.display='none';document.getElementById('modal-share').style.display='none';modalInventory.style.display='block';
+  hideModals();modalInventory.style.display='block';
   renderInventoryStats();overlay.classList.add('open');setTimeout(()=>document.getElementById('inv-project').focus(),60);
 }
 function cleanInventoryLine(line){
@@ -790,6 +869,15 @@ function cleanInventoryLine(line){
   raw=cols.find(c=>/[\\/]/.test(c))||cols[cols.length-1]||raw;
   return normalizeInventoryPath(raw.replace(/^[\s|`+\\-]*(\u251c\u2500\u2500|\u2514\u2500\u2500|\u2502|--)?\s*/,''));
 }
+function parseMetadataColumns(line){
+  const cols=String(line||'').split(/\t|,/).map(c=>c.trim().replace(/^["']|["']$/g,''));
+  const path=cols.find(c=>/[\\/]/.test(c))||cols[0]||'';
+  const rest=cols.filter(c=>c&&c!==path);
+  const duration=rest.find(c=>/^\d{1,2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(c)||/^\d+(\.\d+)?s$/.test(c))||'';
+  const resolution=rest.find(c=>/^\d{3,5}x\d{3,5}$/i.test(c)||/^(HD|FHD|UHD|4K|6K|8K)$/i.test(c))||'';
+  const codec=rest.find(c=>c&&!c.includes('/')&&c!==duration&&c!==resolution&&/[a-z]/i.test(c))||'';
+  return{path:normalizeInventoryPath(path),duration,resolution,codec};
+}
 function parseInventoryLines(text,driveId,projectRoot){
   const source=String(text||'').trim();if(!source)return [];
   try{
@@ -799,14 +887,16 @@ function parseInventoryLines(text,driveId,projectRoot){
       const path=typeof x==='string'?x:(x.path||x.fullPath||x.file||x.name||'');
       const kind=typeof x==='object'&&(x.kind==='folder'||x.kind==='directory')?'folder':(/\/$/.test(String(path))?'folder':'file');
       const size=typeof x==='object'?Number(x.size):null;
-      return makeInventoryItem(path,kind,(typeof x==='object'&&x.driveId)||driveId,(typeof x==='object'&&(x.projectRoot||x.project))||projectRoot,size);
+      const meta=typeof x==='object'?{duration:x.duration||'',resolution:x.resolution||'',codec:x.codec||''}:{};
+      return makeInventoryItem(path,kind,(typeof x==='object'&&x.driveId)||driveId,(typeof x==='object'&&(x.projectRoot||x.project))||projectRoot,size,meta);
     }).filter(it=>it.path);
   }catch(e){}
   const seen=new Set(),records=[];
   source.split(/\r?\n/).forEach(line=>{
-    const path=cleanInventoryLine(line);if(!path||seen.has(path.toLowerCase()))return;
+    const meta=parseMetadataColumns(line);
+    const path=cleanInventoryLine(meta.path||line);if(!path||seen.has(path.toLowerCase()))return;
     seen.add(path.toLowerCase());
-    records.push(makeInventoryItem(path,/\/$/.test(path)?'folder':'file',driveId,projectRoot,null));
+    records.push(makeInventoryItem(path,/\/$/.test(path)?'folder':'file',driveId,projectRoot,null,meta));
   });
   return records;
 }
@@ -869,13 +959,15 @@ document.getElementById('inv-file').addEventListener('change',e=>{if(!guardWrite
 function nextLabel(){const ns=state.drives.map(d=>parseInt(d.label,10)).filter(n=>!isNaN(n));return String(ns.length?Math.max(...ns)+1:1)}
 function openDrive(id){
   if(!guardWrite())return;
-  ui.editDrv=id||null;modalDrive.style.display='block';modalEvent.style.display='none';modalInventory.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-cloud').style.display='none';document.getElementById('modal-share').style.display='none';
+  ui.editDrv=id||null;hideModals();modalDrive.style.display='block';
   const del=document.getElementById('d-delete');
   if(id){const d=driveById(id);document.getElementById('dmodal-tag').textContent='EDIT';document.getElementById('dmodal-title').textContent='Edit drive';del.style.display='inline-flex';
     document.getElementById('d-kind').value=d.kind||'hdd';document.getElementById('d-label').value=d.label||'';document.getElementById('d-name').value=d.name||'';document.getElementById('d-status').value=d.status||'active';document.getElementById('d-note').value=d.note||'';
     document.getElementById('d-cap').value=d.capacity!=null?d.capacity:'';document.getElementById('d-used').value=d.used!=null?d.used:'';document.getElementById('d-capunit').value=d.capUnit||'TB';
+    document.getElementById('d-verified').value=d.lastVerified||'';document.getElementById('d-scanned').value=d.lastScanned||'';
   }else{document.getElementById('dmodal-tag').textContent='NEW';document.getElementById('dmodal-title').textContent='Add drive';del.style.display='none';
     document.getElementById('d-kind').value='hdd';document.getElementById('d-label').value=nextLabel();document.getElementById('d-name').value='';document.getElementById('d-status').value='active';document.getElementById('d-note').value='';document.getElementById('d-cap').value='';document.getElementById('d-used').value='';document.getElementById('d-capunit').value='TB';
+    document.getElementById('d-verified').value='';document.getElementById('d-scanned').value='';
   }
   overlay.classList.add('open');setTimeout(()=>document.getElementById('d-label').focus(),60);
 }
@@ -884,11 +976,12 @@ function saveDrive(){
   const label=document.getElementById('d-label').value.trim(),name=document.getElementById('d-name').value.trim();
   if(!label&&!name)return toast('Add a number or a name');
   const cap=parseFloat(document.getElementById('d-cap').value),used=parseFloat(document.getElementById('d-used').value);
-  const data={kind:document.getElementById('d-kind').value,label,name,status:document.getElementById('d-status').value,note:document.getElementById('d-note').value.trim(),capacity:isNaN(cap)?null:cap,used:isNaN(used)?null:used,capUnit:document.getElementById('d-capunit').value};
+  const data={kind:document.getElementById('d-kind').value,label,name,status:document.getElementById('d-status').value,note:document.getElementById('d-note').value.trim(),capacity:isNaN(cap)?null:cap,used:isNaN(used)?null:used,capUnit:document.getElementById('d-capunit').value,lastVerified:document.getElementById('d-verified').value||'',lastScanned:document.getElementById('d-scanned').value||''};
   if(ui.editDrv){Object.assign(driveById(ui.editDrv),data)}else{state.drives.push(Object.assign({id:uid(),createdAt:Date.now()},data))}
   save();closeModal();render();toast(ui.editDrv?'Saved':'Drive added');
 }
 function delDrive(id){if(!guardWrite())return;const n=eventsOnDrive(id).length;const d=driveById(id);if(!d)return;let m='Delete this drive?';if(n>0)m='Delete this drive? '+n+' shoot(s) reference it; they will lose this drive (shoots stay if they are on other drives).';if(!confirm(m))return;state.events.forEach(e=>{e.driveIds=e.driveIds.filter(x=>x!==id)});state.inventory.forEach(it=>{if(it.driveId===id)it.driveId=''});state.drives=state.drives.filter(x=>x.id!==id);if(ui.sel===id)ui.sel=null;save();closeModal();render();toast('Drive deleted')}
+function verifyDriveToday(id){if(!guardWrite())return;const d=driveById(id);if(!d)return;d.lastVerified=todayISO();d.lastScanned=d.lastScanned||todayISO();save();render();toast('Drive verified today')}
 document.getElementById('d-save').addEventListener('click',saveDrive);
 document.getElementById('d-cancel').addEventListener('click',closeModal);
 document.getElementById('d-delete').addEventListener('click',()=>delDrive(ui.editDrv));
@@ -905,7 +998,12 @@ document.addEventListener('click',e=>{
     else if(a==='add-to-drive'){openEvent(null,t.dataset.id)}
     else if(a==='add-drive'){openDrive(null)}
     else if(a==='open-cloud'){openCloud()}
+    else if(a==='setup'){openSetup()}
+    else if(a==='setup-drive'){openDrive(null)}
+    else if(a==='setup-inventory'){openInventory()}
+    else if(a==='setup-shoot'){openEvent(null,ui.sel)}
     else if(a==='edit-drive'){openDrive(t.dataset.id)}
+    else if(a==='verify-drive'){verifyDriveToday(t.dataset.id)}
     else if(a==='print-drive'){const d=driveById(t.dataset.id);if(d)printDrive(d)}
     else if(a==='tag'){ui.q='';searchInput.value=t.dataset.tag;searchBox.classList.add('has-text');ui.q=t.dataset.tag;render()}
     else if(a==='project'){ui.q='';searchInput.value='';searchBox.classList.remove('has-text');ui.project=t.dataset.project;ui.sel=null;render();window.scrollTo({top:0,behavior:'smooth'})}
@@ -925,6 +1023,11 @@ searchInput.addEventListener('input',e=>{ui.q=e.target.value;searchBox.classList
 document.getElementById('search-clear').addEventListener('click',()=>{ui.q='';searchInput.value='';searchBox.classList.remove('has-text');searchInput.focus();render()});
 document.getElementById('btn-new').addEventListener('click',()=>openEvent(null,ui.sel));
 document.getElementById('fab-new').addEventListener('click',()=>openEvent(null,ui.sel));
+document.getElementById('btn-reports').addEventListener('click',openReports);
+document.getElementById('reports-close').addEventListener('click',closeModal);
+document.getElementById('reports-csv').addEventListener('click',exportReportCSV);
+document.getElementById('setup-close').addEventListener('click',closeModal);
+document.getElementById('setup-never').addEventListener('click',()=>{try{localStorage.setItem(SETUP_KEY,'1')}catch(e){}closeModal();toast('Setup hidden')});
 window.addEventListener('popstate',e=>{const s=e.state||{};ui.sel=s.sel||null;if(s.view)ui.view=s.view;ui.q='';searchInput.value='';searchBox.classList.remove('has-text');[...document.getElementById('view-seg').children].forEach(c=>c.classList.toggle('active',c.dataset.view===ui.view));render()});
 
 /* ===== export / import / demo ===== */
@@ -935,7 +1038,7 @@ document.getElementById('btn-demo').addEventListener('click',loadDemo);
 function loadDemo(){
   if(!guardWrite())return;
   if(state.drives.length||state.events.length||state.inventory.length){if(!confirm('Load sample data? This replaces current data.'))return}
-  const D=(label,kind,name,cap,used,st)=>({id:uid(),label,kind,name:name||'',status:st||'active',capacity:cap??null,used:used??null,capUnit:'TB',note:'',createdAt:Date.now()});
+  const D=(label,kind,name,cap,used,st)=>({id:uid(),label,kind,name:name||'',status:st||'active',capacity:cap??null,used:used??null,capUnit:'TB',note:'',lastVerified:todayISO(),lastScanned:todayISO(),createdAt:Date.now()});
   const d1=D('1','ssd','Samsung T7',2,1.6),d2=D('2','hdd','LaCie',4,3.8,'full'),d3=D('3','hdd','',4,0.6),dc=D('','cloud','Backblaze B2',null,null);
   state.drives=[d1,d2,d3,dc];
   const E=(name,date,ids,client,tags,opt={})=>({id:uid(),name,date,dateDisplay:opt.dd||null,approx:!!opt.approx,driveIds:ids,client:client||'',projectRoot:opt.project||'',tags:tags||[],location:opt.loc||'',note:opt.note||'',createdAt:Date.now()});
@@ -946,10 +1049,10 @@ function loadDemo(){
     E('Product launch','2025-11-05',[d1.id],'Nova',['corporate'],{project:'Nova_Product_Launch'}),
     E('Old archive reel',null,[d3.id],'',['archive'],{dd:'~2022',approx:true,project:'Archive_Reels'})
   ];
-  const Inv=(path,drive,project,size)=>makeInventoryItem(path,/\/$/.test(path)?'folder':'file',drive.id,project,size||null);
+  const Inv=(path,drive,project,size,meta)=>makeInventoryItem(path,/\/$/.test(path)?'folder':'file',drive.id,project,size||null,meta||{});
   state.inventory=[
-    Inv('ACME_Conference_2025/Camera_A/A001_C001.mov',d1,'ACME_Conference_2025',1840000000),
-    Inv('ACME_Conference_2025/Camera_A/A001_C002.mov',d1,'ACME_Conference_2025',2120000000),
+    Inv('ACME_Conference_2025/Camera_A/A001_C001.mov',d1,'ACME_Conference_2025',1840000000,{duration:'00:01:32',resolution:'3840x2160',codec:'ProRes'}),
+    Inv('ACME_Conference_2025/Camera_A/A001_C002.mov',d1,'ACME_Conference_2025',2120000000,{duration:'00:01:48',resolution:'3840x2160',codec:'ProRes'}),
     Inv('ACME_Conference_2025/Audio/day1.wav',d1,'ACME_Conference_2025',820000000),
     Inv('Smith_Wedding_2025/Exports/highlight_v03.mp4',d2,'Smith_Wedding_2025',640000000),
     Inv('City_Marathon_2025/Drone/DJI_0042.MP4',d2,'City_Marathon_2025',980000000)
@@ -979,7 +1082,7 @@ function printDrive(d){
 }
 function clearAll(){if(!guardWrite())return;if(!state.drives.length&&!state.events.length&&!state.inventory.length){toast('Already empty');return}if(!confirm('Delete ALL drives, shoots, and folder inventory from this browser? This cannot be undone — export a backup first if unsure.'))return;state={drives:[],events:[],inventory:[]};save();ui.sel=null;render();toast('Everything cleared')}
 document.getElementById('btn-clear').addEventListener('click',clearAll);
-function openHelp(){modalEvent.style.display='none';modalDrive.style.display='none';modalInventory.style.display='none';document.getElementById('modal-share').style.display='none';document.getElementById('modal-cloud').style.display='none';document.getElementById('modal-help').style.display='block';overlay.classList.add('open')}
+function openHelp(){hideModals();document.getElementById('modal-help').style.display='block';overlay.classList.add('open')}
 document.getElementById('btn-help').addEventListener('click',openHelp);
 document.getElementById('help-close').addEventListener('click',closeModal);
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t)}
@@ -1037,14 +1140,14 @@ function renderCloudPanel(){
   if(out&&cloud.shareLink)out.textContent=cloud.shareLink;
 }
 function cloudSaveConfig(){
-  const cfg={url:cloud.url,key:cloud.key,archiveId:cloud.archiveId,archiveName:cloud.archiveName,role:cloud.role,publicToken:cloud.publicToken,lastSync:cloud.lastSync};
+  const cfg={url:cloud.url,key:cloud.key,archiveId:cloud.archiveId,archiveName:cloud.archiveName,role:cloud.role,publicToken:cloud.publicToken,lastSync:cloud.lastSync,lastSyncVersion:cloud.lastSyncVersion};
   try{localStorage.setItem(CLOUD_KEY,JSON.stringify(cfg))}catch(e){}
 }
 function cloudLoadConfig(){
   try{
     const raw=localStorage.getItem(CLOUD_KEY);if(!raw)return;
     const cfg=JSON.parse(raw)||{};
-    cloud.url=cfg.url||'';cloud.key=cfg.key||'';cloud.archiveId=cfg.archiveId||'';cloud.archiveName=cfg.archiveName||'';cloud.role=cfg.role||'local';cloud.publicToken=cfg.publicToken||'';cloud.lastSync=cfg.lastSync||null;
+    cloud.url=cfg.url||'';cloud.key=cfg.key||'';cloud.archiveId=cfg.archiveId||'';cloud.archiveName=cfg.archiveName||'';cloud.role=cfg.role||'local';cloud.publicToken=cfg.publicToken||'';cloud.lastSync=cfg.lastSync||null;cloud.lastSyncVersion=cfg.lastSyncVersion??null;
     cloud.readOnly=cloud.role==='viewer'||cloud.role==='public';
   }catch(e){}
 }
@@ -1102,12 +1205,12 @@ function cloudSubscribe(){
     .on('postgres_changes',{event:'*',schema:'public',table:'inventory_items',filter:'archive_id=eq.'+cloud.archiveId},cloudScheduleReload)
     .subscribe();
 }
-function driveToCloudRow(d){return{archive_id:cloud.archiveId,id:String(d.id),label:d.label||'',name:d.name||'',kind:d.kind||'hdd',status:d.status||'active',capacity:d.capacity==null?null:d.capacity,used:d.used==null?null:d.used,cap_unit:d.capUnit||'TB',note:d.note||'',created_at:d.createdAt||Date.now()}}
+function driveToCloudRow(d){return{archive_id:cloud.archiveId,id:String(d.id),label:d.label||'',name:d.name||'',kind:d.kind||'hdd',status:d.status||'active',capacity:d.capacity==null?null:d.capacity,used:d.used==null?null:d.used,cap_unit:d.capUnit||'TB',note:d.note||'',last_verified:d.lastVerified||null,last_scanned:d.lastScanned||null,created_at:d.createdAt||Date.now()}}
 function eventToCloudRow(e){return{archive_id:cloud.archiveId,id:String(e.id),name:e.name||'',event_date:e.date||null,date_display:e.dateDisplay||null,approx:!!e.approx,drive_ids:e.driveIds||[],client:e.client||'',project_root:e.projectRoot||'',tags:e.tags||[],stage:e.stage||'',location:e.location||'',note:e.note||'',created_at:e.createdAt||Date.now()}}
-function inventoryToCloudRow(it){return{archive_id:cloud.archiveId,id:String(it.id),drive_id:it.driveId||'',project_root:it.projectRoot||'',path:it.path||'',name:it.name||'',ext:it.ext||'',kind:it.kind||'file',size:it.size==null?null:it.size,created_at:it.createdAt||Date.now()}}
-function cloudRowToDrive(d){return{id:d.id,label:d.label||'',name:d.name||'',kind:d.kind||'hdd',status:d.status||'active',capacity:d.capacity==null?null:Number(d.capacity),used:d.used==null?null:Number(d.used),capUnit:d.cap_unit||'TB',note:d.note||'',createdAt:d.created_at||Date.now()}}
+function inventoryToCloudRow(it){return{archive_id:cloud.archiveId,id:String(it.id),drive_id:it.driveId||'',project_root:it.projectRoot||'',path:it.path||'',name:it.name||'',ext:it.ext||'',kind:it.kind||'file',size:it.size==null?null:it.size,duration:it.duration||'',resolution:it.resolution||'',codec:it.codec||'',created_at:it.createdAt||Date.now()}}
+function cloudRowToDrive(d){return{id:d.id,label:d.label||'',name:d.name||'',kind:d.kind||'hdd',status:d.status||'active',capacity:d.capacity==null?null:Number(d.capacity),used:d.used==null?null:Number(d.used),capUnit:d.cap_unit||'TB',note:d.note||'',lastVerified:d.last_verified||'',lastScanned:d.last_scanned||'',createdAt:d.created_at||Date.now()}}
 function cloudRowToEvent(e){return{id:e.id,name:e.name||'',date:e.event_date||null,dateDisplay:e.date_display||null,approx:!!e.approx,driveIds:Array.isArray(e.drive_ids)?e.drive_ids:[],client:e.client||'',projectRoot:e.project_root||'',tags:Array.isArray(e.tags)?e.tags:[],stage:e.stage||'',location:e.location||'',note:e.note||'',createdAt:e.created_at||Date.now()}}
-function cloudRowToInventory(it){return{id:it.id,driveId:it.drive_id||'',projectRoot:it.project_root||'',path:it.path||'',name:it.name||'',ext:it.ext||'',kind:it.kind||'file',size:it.size==null?null:Number(it.size),createdAt:it.created_at||Date.now()}}
+function cloudRowToInventory(it){return{id:it.id,driveId:it.drive_id||'',projectRoot:it.project_root||'',path:it.path||'',name:it.name||'',ext:it.ext||'',kind:it.kind||'file',size:it.size==null?null:Number(it.size),duration:it.duration||'',resolution:it.resolution||'',codec:it.codec||'',createdAt:it.created_at||Date.now()}}
 function cloudRequireClient(){if(cloudInitClient())return true;toast('Paste your Supabase URL and public key first');return false}
 function cloudErr(err,fallback){
   const msg=String(err&&err.message?err.message:err||'');
@@ -1142,6 +1245,21 @@ async function cloudTestConnection(){
   }catch(err){toast(cloudErr(err,'Connection failed. Check URL, key, and SQL setup.'))}
 }
 function cloudCopyArchiveId(){copyText(cloud.archiveId,'Archive ID copied')}
+async function cloudConfirmFreshBeforePush(opts={}){
+  if(opts.force||!cloud.client||!cloud.archiveId||cloud.lastSyncVersion==null)return true;
+  const res=await cloud.client.from('archives').select('sync_version').eq('id',cloud.archiveId).single();
+  if(res.error||!res.data)return true;
+  const remote=Number(res.data.sync_version||0);
+  if(remote===Number(cloud.lastSyncVersion||0))return true;
+  return confirm('Cloud archive changed since your last download.\\n\\nCancel and click Download cloud data if you want to review the newer cloud copy first. OK overwrites the cloud with this local browser.');
+}
+async function cloudTouchArchiveVersion(){
+  if(!cloud.client||!cloud.archiveId)return;
+  const res=await cloud.client.rpc('diskcat_touch_archive',{p_archive_id:cloud.archiveId});
+  if(!res.error&&res.data&&res.data.sync_version!=null){cloud.lastSyncVersion=Number(res.data.sync_version);cloudSaveConfig();return}
+  const fresh=await cloud.client.from('archives').select('sync_version').eq('id',cloud.archiveId).single();
+  if(!fresh.error&&fresh.data){cloud.lastSyncVersion=Number(fresh.data.sync_version||0);cloudSaveConfig()}
+}
 async function cloudConnectFromForm(){
   const url=document.getElementById('cloud-url').value.trim().replace(/\/+$/,'');
   const key=document.getElementById('cloud-key').value.trim();
@@ -1181,9 +1299,9 @@ async function cloudCreateArchive(){
   if(!cloudRequireClient())return;
   if(!cloud.user)return toast('Sign in first');
   const name=prompt('Cloud archive name:',cloud.archiveName||'DiskCat Archive');if(name===null)return;
-  const res=await cloud.client.from('archives').insert({owner_id:cloud.user.id,name:name.trim()||'DiskCat Archive'}).select('id,name,owner_id,public_read_enabled,public_read_token').single();
+  const res=await cloud.client.from('archives').insert({owner_id:cloud.user.id,name:name.trim()||'DiskCat Archive'}).select('id,name,owner_id,public_read_enabled,public_read_token,sync_version').single();
   if(res.error)return toast(cloudErr(res.error,'Could not create cloud archive'));
-  cloud.archiveId=res.data.id;cloud.archiveName=res.data.name;cloud.role='owner';cloud.readOnly=false;cloud.publicToken=res.data.public_read_token||'';cloudSaveConfig();
+  cloud.archiveId=res.data.id;cloud.archiveName=res.data.name;cloud.role='owner';cloud.readOnly=false;cloud.publicToken=res.data.public_read_token||'';cloud.lastSyncVersion=Number(res.data.sync_version||0);cloudSaveConfig();
   await cloudSyncAll({silent:true});cloudSubscribe();render();renderCloudPanel();toast('Cloud archive created');
 }
 async function cloudLoadArchive(id,opts={}){
@@ -1192,7 +1310,7 @@ async function cloudLoadArchive(id,opts={}){
   id=(id||cloud.archiveId||'').trim();if(!id)return toast('Paste or create an archive ID');
   cloud.loading=true;renderCloudPanel();
   try{
-    const a=await cloud.client.from('archives').select('id,name,owner_id,public_read_enabled,public_read_token').eq('id',id).single();
+    const a=await cloud.client.from('archives').select('id,name,owner_id,public_read_enabled,public_read_token,sync_version').eq('id',id).single();
     if(a.error)throw a.error;
     const m=await cloud.client.from('archive_members').select('role').eq('archive_id',id).eq('user_id',cloud.user.id).maybeSingle();
     const d=await cloud.client.from('drives').select('*').eq('archive_id',id);
@@ -1202,7 +1320,7 @@ async function cloudLoadArchive(id,opts={}){
     const inv=await cloud.client.from('inventory_items').select('*').eq('archive_id',id);
     if(inv.error&&!cloudMissingInventory(inv.error))throw inv.error;
     const role=a.data.owner_id===cloud.user.id?'owner':((m.data&&m.data.role)||'viewer');
-    cloud.archiveId=id;cloud.archiveName=a.data.name||'';cloud.publicToken=a.data.public_read_token||'';cloud.role=role;cloud.readOnly=!(role==='owner'||role==='editor');
+    cloud.archiveId=id;cloud.archiveName=a.data.name||'';cloud.publicToken=a.data.public_read_token||'';cloud.role=role;cloud.readOnly=!(role==='owner'||role==='editor');cloud.lastSyncVersion=Number(a.data.sync_version||0);
     state={drives:(d.data||[]).map(cloudRowToDrive),events:(ev.data||[]).map(cloudRowToEvent),inventory:(inv.data||[]).map(cloudRowToInventory)};migrate();save();
     cloudMarkSynced();cloudSubscribe();render();if(!opts.silent)toast('Cloud data loaded');
   }catch(err){toast(cloudErr(err,'Could not load cloud archive'))}
@@ -1210,6 +1328,7 @@ async function cloudLoadArchive(id,opts={}){
 }
 async function cloudSyncAll(opts={}){
   if(!cloud.client||!cloud.archiveId||!cloudCanWrite())return;
+  if(!(await cloudConfirmFreshBeforePush(opts)))return toast('Cloud push cancelled');
   cloud.syncing=true;renderCloudPanel();
   try{
     const id=cloud.archiveId;
@@ -1221,6 +1340,7 @@ async function cloudSyncAll(opts={}){
     if(drives.length){res=await cloud.client.from('drives').upsert(drives);if(res.error)throw res.error}
     if(events.length){res=await cloud.client.from('events').upsert(events);if(res.error)throw res.error}
     if(inventory.length&&!inventoryMissing){res=await cloud.client.from('inventory_items').upsert(inventory);if(res.error){if(cloudMissingInventory(res.error))inventoryMissing=true;else throw res.error}}
+    await cloudTouchArchiveVersion();
     cloudMarkSynced();
     if(inventoryMissing&&inventory.length)toast('Cloud synced except folder inventory. Run the latest SQL setup.');
     else if(!opts.silent)toast('Cloud synced');
@@ -1288,13 +1408,13 @@ async function cloudHandleIncoming(){
   return true;
 }
 function openCloud(){
-  modalEvent.style.display='none';modalDrive.style.display='none';modalInventory.style.display='none';document.getElementById('modal-help').style.display='none';modalShare.style.display='none';document.getElementById('modal-cloud').style.display='block';
+  hideModals();document.getElementById('modal-cloud').style.display='block';
   renderCloudPanel();overlay.classList.add('open');
 }
 function cloudDisconnect(){
   cloudUnsubscribe();
   if(cloud.authSub&&cloud.authSub.unsubscribe)cloud.authSub.unsubscribe();
-  cloud={client:null,clientUrl:'',clientKey:'',url:'',key:'',user:null,archiveId:'',archiveName:'',role:'local',readOnly:false,publicToken:'',pendingInvite:null,syncTimer:null,reloadTimer:null,loading:false,syncing:false,lastSync:null,shareLink:'',authSub:null,channel:null};
+  cloud={client:null,clientUrl:'',clientKey:'',url:'',key:'',user:null,archiveId:'',archiveName:'',role:'local',readOnly:false,publicToken:'',pendingInvite:null,syncTimer:null,reloadTimer:null,loading:false,syncing:false,lastSync:null,lastSyncVersion:null,shareLink:'',authSub:null,channel:null};
   try{localStorage.removeItem(CLOUD_KEY)}catch(e){}
   render();renderCloudPanel();toast('Cloud disconnected. Local data stayed here.');
 }
@@ -1327,7 +1447,7 @@ function b64e(s){return btoa(unescape(encodeURIComponent(s)))}
 function b64d(b){return decodeURIComponent(escape(atob(b)))}
 function shareLink(){return location.origin+location.pathname+'#a='+encodeURIComponent(b64e(JSON.stringify({drives:state.drives,events:state.events,inventory:state.inventory})))}
 function openShare(){
-  modalEvent.style.display='none';modalDrive.style.display='none';modalInventory.style.display='none';document.getElementById('modal-help').style.display='none';document.getElementById('modal-cloud').style.display='none';modalShare.style.display='block';
+  hideModals();modalShare.style.display='block';
   const link=shareLink(),inp=document.getElementById('share-link');inp.value=link;
   document.getElementById('share-size').textContent='('+Math.max(1,Math.round(link.length/1024))+' KB'+(link.length>16000?' — large, the Export file may be easier to send':'')+')';
   overlay.classList.add('open');
@@ -1358,6 +1478,7 @@ async function init(){
   const handled=await checkIncoming();
   if(!handled)await cloudAutoLoadArchive();
   render();renderCloudPanel();
+  maybeOpenSetup();
   try{history.replaceState({sel:null,view:ui.view},'')}catch(e){}
   if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 }

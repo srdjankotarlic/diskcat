@@ -9,8 +9,11 @@ DiskCat is an offline-first catalog for video, photo, live-production, and archi
 No signup is needed for local use. Optional cloud sync is self-owned: every user or team connects their own Supabase project, so the DiskCat maintainer does not host, process, or maintain other people's archive data.
 
 ### ▶️ Use it now: https://srdjankotarlic.github.io/diskcat/
+### ⬇️ Download for Mac: open the [latest GitHub Release](https://github.com/srdjankotarlic/diskcat/releases/latest) and download `DiskCat.dmg`
 
 <img src="favicon.svg" width="96" alt="DiskCat">
+
+![DiskCat overview](docs/diskcat-overview.jpg)
 
 ---
 
@@ -36,11 +39,13 @@ It is designed for the real workflow: shoots pile up across HDDs, SSDs, SD cards
 2. **Add your drives**: choose HDD, SSD, SD card, USB, NAS, cloud, or laptop; add number/name, status, capacity, and note.
 3. **Log footage** with **New entry**: name, date, project/root folder, client, tags, stage, location, note, and all drives that contain a copy.
 4. **Optional folder inventory**: click **Folder inventory**, attach it to a drive/project if useful, then scan a folder in Chrome/Edge or paste/import a text list from `find`, `tree`, DiskCatalogMaker, or another catalog export.
-5. **Use search first**: type a shoot, filename, file type, project/root folder, client, tag, year, or drive number and DiskCat shows exactly where the footage is.
-6. **Watch backup status**: one copy is a risk; two or more copies show as backed up.
-7. **Export backups** regularly with **Backup**. You can also export CSV for Excel/Sheets or print a drive's contents.
+5. **Use Reports** to see footage with one copy, entries missing a drive, stale drive verification, and a per-project drive map.
+6. **Use search first**: type a shoot, filename, file type, project/root folder, client, tag, year, or drive number and DiskCat shows exactly where the footage is.
+7. **Watch backup status**: one copy is a risk; two or more copies show as backed up.
+8. **Export backups** regularly with **Backup**. You can also export CSV for Excel/Sheets or print a drive's contents.
 
 ## Get it / install
+- **Download for Mac**: go to the [latest GitHub Release](https://github.com/srdjankotarlic/diskcat/releases/latest), download `DiskCat.dmg`, open it, and drag **DiskCat** to Applications. The Mac app is local/offline by default.
 - **Use in browser**: https://srdjankotarlic.github.io/diskcat/
 - **Install as an app**: open the site in Chrome/Edge and choose **Install app**. On phones, use **Add to Home Screen**.
 - **Use one local file**: download `diskcat.html` and open it directly.
@@ -63,8 +68,11 @@ DiskCat's public GitHub Pages site only hosts the static app files. It does **no
 - 🗂️ **Drives of every kind** — HDD, SSD, SD/CF card, USB, NAS, cloud, laptop (each with its own icon)
 - 🔎 **Instant search** — find a shoot and see which drive(s) hold it
 - 🧩 **Project/root folder view** — enter the top-level job folder once, then filter every related shoot and drive together
-- 📁 **Folder inventory** — scan locally or import a file list, then search filenames, folder paths, extensions, project numbers, and exports without opening every drive
+- 📁 **Folder inventory** — scan locally or import a file list, then search filenames, folder paths, extensions, project numbers, media metadata, and exports without opening every drive
+- 🎞️ **Optional ffprobe metadata** — import CSV columns like `path,duration,resolution,codec` when you want searchable duration/resolution/codec fields
 - ✅ **Backup tracking** — footage saved on 2+ drives shows **✓ backed up**; a counter shows how many shoots are **not** backed up yet
+- 🧾 **Reports** — not backed up, missing drive, stale verification, and per-project drive map
+- 🗓️ **Drive verification** — track each drive's last verified / last scanned date and mark a drive verified today
 - 📊 **Space overview** — capacity bars per drive + total **free space** across everything
 - 🏷️ **Projects, clients, tags & stage** — group and filter (raw / edited / delivered / archived)
 - 🔗 **Share via link** — hand your whole list to a colleague with one link (they get an editable copy)
@@ -78,6 +86,7 @@ DiskCat's public GitHub Pages site only hosts the static app files. It does **no
 - **Optional cloud mode:** click **Cloud sync** and connect your own Supabase project. DiskCat does not host your cloud data. The person/company that creates the Supabase project owns and maintains that data.
 - **Read-only without account:** owners can create a public read-only cloud link. Viewers can search and open drives without signing in, but cannot edit.
 - **Team editing:** owners can create viewer/editor invite links. Invited people sign in to the archive owner's Supabase project.
+- **Conflict warning:** before pushing, DiskCat checks the cloud archive version and warns if another editor changed the archive since your last download.
 
 Full setup: [docs/CLOUD_SETUP.md](docs/CLOUD_SETUP.md)
 
@@ -88,9 +97,24 @@ The maintainer does not host your cloud data and is not responsible for user-cre
 
 Click **Export** now and then to keep a backup file. To move without cloud: **Export** on one device, **Import** on the other.
 
+## Optional ffprobe metadata
+DiskCat does not need `ffprobe`. If you already use FFmpeg/ffprobe and want richer searchable inventory, use it to read media details and then paste/import CSV lines in this shape:
+
+```csv
+ACME_Conference_2025/Camera_A/A001_C001.mov,00:01:32,3840x2160,ProRes
+```
+
+One free way to get the raw metadata on Mac is:
+
+```bash
+ffprobe -v error -show_entries format=duration:stream=codec_name,width,height -of csv=p=0 "your-file.mov"
+```
+
+On Mac, FFmpeg is free and commonly installed with Homebrew: `brew install ffmpeg`.
+
 ## Roadmap (planned)
 - 🌍 Multiple languages
-- 🗓️ Per-drive “last verified” date and simple reports
+- Native folder metadata helper for the Mac app
 
 *Want one of these sooner? [Open an issue](https://github.com/srdjankotarlic/diskcat/issues).*
 

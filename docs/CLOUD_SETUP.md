@@ -14,7 +14,7 @@ Each team that wants sync creates its own Supabase project. That team owns the d
 - Optional folder inventory records stay synced too. DiskCat stores searchable names, paths, file types, and attached drive/project metadata, not the actual media files.
 - Local export/import still works as a backup.
 
-Cloud mode is designed for small production teams. It syncs the whole archive after edits, so the newest save wins if two editors change the same archive at the same time.
+Cloud mode is designed for small production teams. It syncs the whole archive after edits. If another editor changed the cloud archive since your last download, DiskCat warns you before your browser overwrites the cloud copy.
 
 ## Free Setup
 
@@ -35,6 +35,8 @@ Supabase has a Free plan suitable for small DiskCat archives. Check the current 
 
 The in-app Cloud sync panel also includes **Copy SQL**, **Setup docs**, the active archive ID, and **Last synced** so users can see whether the archive is connected.
 
+When updating an older cloud archive, run the latest SQL again. It safely adds new columns such as drive `last_verified`, optional media metadata, and `sync_version` for conflict warnings.
+
 ## Sharing
 
 Owner:
@@ -54,6 +56,14 @@ Editor:
 - Cannot create invite links unless made owner in the database.
 
 ## Install On Mac
+
+Option A, native wrapper:
+
+1. Download `DiskCat.dmg` from the latest GitHub Release.
+2. Open the DMG and drag **DiskCat** to Applications.
+3. Open DiskCat. This local app works offline and stores data on that Mac unless you connect your own cloud.
+
+Option B, browser app:
 
 1. Open DiskCat in Chrome.
 2. Click the install icon in the address bar, or open Chrome menu and choose the install app option.
